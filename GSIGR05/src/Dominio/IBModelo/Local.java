@@ -4,10 +4,19 @@
  */
 package Dominio.IBModelo;
 
+import Dominio.BModel.Direccion;
+import Dominio.BModel.Propietario;
+import java.util.List;
+
 /**
  *
  * @author alumno
  */
 public class Local {
+    private String nombre; 
+    private Direccion dirección; 
+    
+    private List<Propietario> dueños; // maximo 3 minimo 1
+    
     
 }

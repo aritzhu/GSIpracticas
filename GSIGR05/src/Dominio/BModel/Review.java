@@ -4,10 +4,13 @@
  */
 package Dominio.BModel;
 
+import java.util.Date;
 /**
  *
  * @author alumno
  */
 public class Review {
-    
+    private int valoración;
+    private String comentario; //gestionar luego para que no sobrepase 500 caracteres
+    private Date fechaVisita; 
 }

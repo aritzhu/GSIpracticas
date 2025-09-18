@@ -9,5 +9,8 @@ package Dominio.BModel;
  * @author alumno
  */
 public class Direccion {
-    
+    private String localidad; 
+    private String provincia; 
+    private String calle;
+    private int numero; 
 }

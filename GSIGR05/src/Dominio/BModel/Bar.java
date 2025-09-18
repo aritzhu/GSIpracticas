@@ -4,10 +4,14 @@
  */
 package Dominio.BModel;
 
+import Applicacion.Enums.EnumEspecialidadesBar;
+import java.util.List;
+
 /**
  *
  * @author alumno
  */
 public class Bar {
-    
+    private float precioMenu;
+    private List<EnumEspecialidadesBar> especialidades;
 }

@@ -2,13 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Dominio.BModel;
+package Applicacion.Enums;
 
 /**
  *
  * @author alumno
  */
-public class Pub {
-    private int horaApertura;
-    private int horaCierra;
+public enum EnumEspecialidadesBar {
+    Vino, Cerveza, Oihan, Sancet
 }

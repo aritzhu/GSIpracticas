@@ -4,10 +4,13 @@
  */
 package Dominio.BModel;
 
+import Dominio.IBModelo.Local;
 /**
  *
  * @author alumno
  */
-public class Restaurante {
-    
+public class Restaurante extends Local{
+    private float precioMenu;
+    private int capacidadComensales;
+    private int capacidadComensalesMesa;
 }
