@@ -8,13 +8,21 @@ import Dominio.BModel.*;
 import Dominio.IBModelo.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 /**
  *
  * @author alumno
  */
 public class BusinessSystem implements LeisureOffice {
+    private EjecuctionTimeDataBase database;
 
+    public BusinessSystem() {
+        this.database = new EjecuctionTimeDataBase();
+    }
+    
+    
+    
     @Override
     public boolean nuevoUsuario(Usuario u) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -37,7 +45,17 @@ public class BusinessSystem implements LeisureOffice {
 
     @Override
     public Usuario obtenerUsuario(String nick) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
+        List<Usuario> usuarios =  this.database.getUsuarios();
+        
+        for (Usuario usuario : usuarios) {
+            
+            if(usuario.getNick().equals(nick)) {
+                return usuario;
+            }
+        }
+        
+        return null;
     }
 
     @Override

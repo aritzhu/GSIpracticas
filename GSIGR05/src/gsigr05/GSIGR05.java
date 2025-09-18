@@ -4,6 +4,8 @@
  */
 package gsigr05;
 
+import Dominio.BTesting.P02.Tester02;
+
 /**
  *
  * @author alumno
@@ -15,6 +17,8 @@ public class GSIGR05 {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Tester02 test2 = new Tester02();
+        System.out.println(test2.userNotExistNull()); 
     }
     
 }

@@ -15,4 +15,9 @@ public class Usuario {
     private String contrsenia;
     private int edad; // > 14
     private Date fechaNacimineto;
+
+    public String getNick() {
+        return nick;
+    }
+    
 }
