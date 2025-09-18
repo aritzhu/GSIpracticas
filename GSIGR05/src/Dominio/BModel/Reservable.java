@@ -4,12 +4,10 @@
  */
 package Dominio.BModel;
 
-import Dominio.IBModelo.Usuario;
-
 /**
  *
  * @author alumno
  */
-public class Dueño extends Usuario {
+public class Reservable {
     
 }
