@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Dominio.BModel;
-
 import Dominio.IBModelo.Local;
 import Dominio.IBModelo.Usuario;
 import java.util.List;

@@ -5,7 +5,6 @@
 package Dominio.BModel;
 
 import java.util.Date;
-
 /**
  *
  * @author alumno
