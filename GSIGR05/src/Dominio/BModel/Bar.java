@@ -4,16 +4,14 @@
  */
 package Dominio.BModel;
 
-import Dominio.IBModelo.Local;
-import java.util.Date;
+import Applicacion.Enums.EnumEspecialidadesBar;
+import java.util.List;
 
 /**
  *
  * @author alumno
  */
-public class Reserva {
-    private Date fechaReserva;
-    private int descuento;
-    private Cliente cliente;
-    private Local local;
+public class Bar {
+    private float precioMenu;
+    private List<EnumEspecialidadesBar> especialidades;
 }

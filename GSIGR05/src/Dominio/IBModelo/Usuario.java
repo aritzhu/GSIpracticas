@@ -4,10 +4,15 @@
  */
 package Dominio.IBModelo;
 
+import java.util.Date;
+
 /**
  *
  * @author alumno
  */
 public class Usuario {
-    
+    private String nick; 
+    private String contrsenia;
+    private int edad; // > 14
+    private Date fechaNacimineto;
 }

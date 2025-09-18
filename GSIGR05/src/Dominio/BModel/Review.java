@@ -4,16 +4,14 @@
  */
 package Dominio.BModel;
 
-import Dominio.IBModelo.Local;
 import java.util.Date;
 
 /**
  *
  * @author alumno
  */
-public class Reserva {
-    private Date fechaReserva;
-    private int descuento;
-    private Cliente cliente;
-    private Local local;
+public class Review {
+    private int valoración;
+    private String comentario; //gestionar luego para que no sobrepase 500 caracteres
+    private Date fechaVisita; 
 }

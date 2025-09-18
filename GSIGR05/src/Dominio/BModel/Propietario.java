@@ -5,15 +5,14 @@
 package Dominio.BModel;
 
 import Dominio.IBModelo.Local;
-import java.util.Date;
+import Dominio.IBModelo.Usuario;
+import java.util.List;
 
 /**
  *
  * @author alumno
  */
-public class Reserva {
-    private Date fechaReserva;
-    private int descuento;
-    private Cliente cliente;
-    private Local local;
+public class Propietario extends Usuario {
+    private List<Local> locales;
+    private List<Contestacion> contestaciones;
 }
