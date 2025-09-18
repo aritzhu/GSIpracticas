@@ -5,7 +5,7 @@
  * ---
  * Nota: esta documento no contiene tildes ni caracteres castellanos.
  */
-package Applicacion.IService;
+package Applicacion.BSystem;
 import BModel.*;
 
 /**
