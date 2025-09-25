@@ -24,10 +24,43 @@ public class Usuario {
         this.edad = edad;
         this.fechaNacimineto = fechaNacimineto;
     }
-  
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
     public String getNick() {
         return nick;
     }
-    
 
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
+    }
+
+    public int getEdad() {
+        return edad;
+    }
+
+    public void setEdad(int edad) {
+        this.edad = edad;
+    }
+
+    public Date getFechaNacimineto() {
+        return fechaNacimineto;
+    }
+
+    public void setFechaNacimineto(Date fechaNacimineto) {
+        this.fechaNacimineto = fechaNacimineto;
+    }
 }

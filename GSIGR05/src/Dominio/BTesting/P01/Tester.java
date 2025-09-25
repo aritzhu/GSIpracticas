@@ -12,24 +12,29 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  *
  * @author alumno
  */
 public class Tester {
-    
-    @Test
-    void Tester() throws ParseException {
-        BusinessSystem bs = new BusinessSystem();
-        
-        List<Review> reviews = new ArrayList<>();
+    public static void main(String[] args) {
+        try {
+            BusinessSystem bs = new BusinessSystem();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date fechaNacimiento = sdf.parse("15/09/1990");
+            List<Review> reviews = new ArrayList<>();
 
-        Cliente cliente = new Cliente(reviews,"001", "Mario", "1234pass", 34, fechaNacimiento);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date fechaNacimiento = sdf.parse("15/09/1990");
+
+            Cliente cliente = new Cliente(reviews, "001", "Mario", "1234pass", 34, fechaNacimiento);
+
+            if (bs.nuevoUsuario(cliente)) {
+                System.out.println("Cliente creado");
+            } else {
+                System.out.println("Error al crear");
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

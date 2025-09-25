@@ -91,7 +91,7 @@ public interface LeisureOffice {
      * @param ld la fecha de visita
      * @return True si y solo si la review existe.
      */
-    public boolean existeRewiew(Usuario u, Local l, LocalDate ld);
+    public boolean existeRewiew(Review r);
             
     
     

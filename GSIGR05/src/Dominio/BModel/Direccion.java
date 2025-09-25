@@ -37,7 +37,4 @@ public class Direccion {
     public int getNumero() {
         return numero;
     }
-    
-    
-    
 }

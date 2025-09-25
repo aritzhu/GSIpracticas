@@ -22,11 +22,20 @@ public class BusinessSystem implements LeisureOffice {
         this.database = new EjecuctionTimeDataBase();
     }
     
-    
-    
     @Override
     public boolean nuevoUsuario(Usuario u) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (u == null) {
+            return false;
+        }
+        
+        // Evitamos duplicados por ID
+        for (Usuario existente : database.getUsuarios()) {
+            if (existente.getID().equals(u.getID())) {
+                return false;
+            }
+        }
+        database.getUsuarios().add(u);
+        return true;
     }
 
     @Override
@@ -46,7 +55,6 @@ public class BusinessSystem implements LeisureOffice {
 
     @Override
     public Usuario obtenerUsuario(String nick) {
-        
         List<Usuario> usuarios =  this.database.getUsuarios();
         
         for (Usuario usuario : usuarios) {
@@ -70,13 +78,28 @@ public class BusinessSystem implements LeisureOffice {
     }
 
     @Override
-    public boolean existeRewiew(Usuario u, Local l, LocalDate ld) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean existeRewiew(Review r) {
+        if (r == null){
+            return false;
+        }
+        
+        for (Review existente : database.getReviews()) {
+            if (existente.equals(r))
+                return true;
+        }
+        return false;
     }
 
     @Override
     public boolean nuevaContestacion(Contestacion c, Review r) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (c == null || r == null)
+            return false;
+                    
+        if (!database.getReviews().contains(r))
+            return false;
+        
+        database.getContestaciones().add(c);
+        return true;
     }
 
     @Override

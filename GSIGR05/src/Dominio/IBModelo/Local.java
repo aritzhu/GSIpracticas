@@ -36,7 +36,5 @@ public class Local {
     public List<Propietario> getDueños() {
         return dueños;
     }
-
-    
     
 }
