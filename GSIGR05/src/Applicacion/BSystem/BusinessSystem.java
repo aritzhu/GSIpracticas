@@ -67,13 +67,28 @@ public class BusinessSystem implements LeisureOffice {
     }
 
     @Override
-    public boolean existeRewiew(Usuario u, Local l, LocalDate ld) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean existeRewiew(Review r) {
+        if (r == null){
+            return false;
+        }
+        
+        for (Review existente : database.getReviews()) {
+            if (existente.equals(r))
+                return true;
+        }
+        return false;
     }
 
     @Override
     public boolean nuevaContestacion(Contestacion c, Review r) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (c == null || r == null)
+            return false;
+                    
+        if (!database.getReviews().contains(r))
+            return false;
+        
+        database.getContestaciones().add(c);
+        return true;
     }
 
     @Override
