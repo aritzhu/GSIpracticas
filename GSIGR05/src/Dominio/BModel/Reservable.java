@@ -4,16 +4,10 @@
  */
 package Dominio.BModel;
 
-import Dominio.IBModelo.Local;
-import java.util.Date;
-
 /**
  *
  * @author alumno
  */
-public class Reserva {
-    private Date fechaReserva;
-    private int descuento;
-    private Cliente cliente;
-    private Local local;
+public class Reservable {
+    
 }

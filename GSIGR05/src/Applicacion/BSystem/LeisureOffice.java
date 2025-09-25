@@ -7,9 +7,10 @@
  */
 package Applicacion.BSystem;
 
-import BModel.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import Dominio.BModel.*;
+import Dominio.IBModelo.*;
 
 /**
  * Interfaz de acceso a BSystem

@@ -9,5 +9,7 @@ package Dominio.BModel;
  * @author alumno
  */
 public class Contestacion {
-    
+    private Propietario dueño;
+    private Review review;
+    private String contestacion;
 }
