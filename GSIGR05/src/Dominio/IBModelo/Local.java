@@ -6,6 +6,7 @@ package Dominio.IBModelo;
 
 import Dominio.BModel.Direccion;
 import Dominio.BModel.Propietario;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,9 +15,26 @@ import java.util.List;
  */
 public class Local {
     private String nombre; 
-    private Direccion dirección; 
-    
+    private Direccion direccion; 
     private List<Propietario> dueños; // maximo 3 minimo 1
-    
+
+    public Local(String nombre, Direccion direccion,List<Propietario>  dueños) {
+        this.nombre = nombre;
+        this.direccion = direccion;
+        this.dueños = dueños;
+    }
+
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public Direccion getDireccion() {
+        return direccion;
+    }
+
+    public List<Propietario> getDueños() {
+        return dueños;
+    }
     
 }

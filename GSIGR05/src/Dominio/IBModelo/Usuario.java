@@ -16,7 +16,7 @@ public class Usuario {
     private String contrasenia;
     private int edad; // > 14
     private Date fechaNacimineto;
-
+  
     public Usuario(String ID, String nick, String contrasenia, int edad, Date fechaNacimineto) {
         this.ID = ID;
         this.nick = nick;
@@ -24,7 +24,6 @@ public class Usuario {
         this.edad = edad;
         this.fechaNacimineto = fechaNacimineto;
     }
-
     public String getID() {
         return ID;
     }
@@ -64,6 +63,4 @@ public class Usuario {
     public void setFechaNacimineto(Date fechaNacimineto) {
         this.fechaNacimineto = fechaNacimineto;
     }
-    
-    
 }

@@ -12,5 +12,29 @@ public class Direccion {
     private String localidad; 
     private String provincia; 
     private String calle;
-    private int numero; 
+    private int numero;
+
+    public Direccion(String localidad, String provincia, String calle, int numero) {
+        this.localidad = localidad;
+        this.provincia = provincia;
+        this.calle = calle;
+        this.numero = numero;
+    }
+
+    
+    public String getLocalidad() {
+        return localidad;
+    }
+
+    public String getProvincia() {
+        return provincia;
+    }
+
+    public String getCalle() {
+        return calle;
+    }
+
+    public int getNumero() {
+        return numero;
+    }
 }

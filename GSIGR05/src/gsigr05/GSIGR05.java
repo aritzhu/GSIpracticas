@@ -4,6 +4,10 @@
  */
 package gsigr05;
 
+import Dominio.BTesting.P02.Tester02;
+import Dominio.BTesting.P03.Tester03;
+import Dominio.BTesting.P04.Tester04;
+
 /**
  *
  * @author alumno
@@ -15,6 +19,16 @@ public class GSIGR05 {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        Tester02 test2 = new Tester02();
+        System.out.println(test2.userNotExistNull()); 
+        
+        Tester03 test3 = new Tester03();
+        System.out.println(test3.localDirecctionMustBeUnique()); 
+        
+        Tester04 test4 = new Tester04();
+        System.out.println(test4.localDeletedCanReinsert()); 
+        
     }
+    
     
 }
