@@ -4,6 +4,7 @@
  */
 package Applicacion.BSystem;
 
+import Applicacion.DTOS.Validators.LocalValidator;
 import Dominio.BModel.*;
 import Dominio.IBModelo.*;
 import java.time.LocalDate;
@@ -100,12 +101,21 @@ public class BusinessSystem implements LeisureOffice {
 
     @Override
     public boolean nuevoLocal(Local l) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if(new LocalValidator().ValidarLocal(l,this.database))
+        {
+            this.database.getLocales().add(l);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public boolean eliminarLocal(Local l) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public boolean eliminarLocal(Local local) {
+        List<Local> locales = this.database.getLocales();
+
+        locales.remove(local);
+        
+        return true;
     }
 
     @Override
@@ -160,7 +170,21 @@ public class BusinessSystem implements LeisureOffice {
 
     @Override
     public Local[] listarLocales(String ciudad, String provincia) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                
+        List<Local> locales =  this.database.getLocales();
+        
+        List<Local> localesListados = null;
+        
+        int i = 0;
+        
+        for (Local local : locales) {
+            
+            if(local.getDireccion().getLocalidad().equals(ciudad) && local.getDireccion().getProvincia().equals(provincia)) {
+                localesListados.add(local);
+            }
+        }
+        
+        return localesListados.toArray(new Local[0]); 
     }
 
     @Override
