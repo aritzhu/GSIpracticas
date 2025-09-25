@@ -4,6 +4,9 @@
  */
 package Dominio.IBModelo;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -63,6 +66,19 @@ public class Usuario {
 
     public void setFechaNacimineto(Date fechaNacimineto) {
         this.fechaNacimineto = fechaNacimineto;
+    }
+    
+    public boolean esMayorDeEdad() {
+        if (fechaNacimineto == null) return false;
+        LocalDate nacimiento = fechaNacimineto.toInstant()
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate();
+
+        LocalDate hoy = LocalDate.now();
+
+        int anos_usuario = Period.between(nacimiento, hoy).getYears();
+
+        return anos_usuario >= 14;
     }
     
     
