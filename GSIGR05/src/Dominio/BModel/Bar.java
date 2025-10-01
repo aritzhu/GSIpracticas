@@ -5,13 +5,18 @@
 package Dominio.BModel;
 
 import Applicacion.Enums.EnumEspecialidadesBar;
+import Dominio.IBModelo.Local;
 import java.util.List;
 
 /**
  *
  * @author alumno
  */
-public class Bar {
+public class Bar extends Local{
     private float precioMenu;
     private List<EnumEspecialidadesBar> especialidades;
+
+    public Bar(String nombre, Direccion dirección, List<Propietario> dueños) {
+        super(nombre, dirección, dueños);
+    }
 }
