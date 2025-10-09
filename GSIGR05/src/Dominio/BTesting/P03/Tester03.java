@@ -27,12 +27,14 @@ public class Tester03 {
         
         this.setUp();
         
-        Direccion direccion = new Direccion("Villanueva","Navarra","hay",1);
+        Direccion direccion1 = new Direccion("Villanueva","Navarra","hay",1);
+         Direccion direccion = new Direccion("Villanueva","Navarra","hay",2);
         
         Local local1 = new Local("si1",direccion,null);
+        Local local11 = new Local("si1",direccion1,null);
         
         this.bs.nuevoLocal(local1);
-        if(!this.bs.nuevoLocal(local1)) {
+        if(!this.bs.nuevoLocal(local11)) {
             return "OK";
         }
         return "Error";

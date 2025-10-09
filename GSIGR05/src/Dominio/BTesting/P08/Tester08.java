@@ -13,7 +13,7 @@ import Dominio.BModel.Review;
  * @author alumno
  */
 public class Tester08 {
-    public static void main(String[] args) {
+    public void comprobarCOntestacion() {
         BusinessSystem bs = new BusinessSystem();
         Contestacion c = new Contestacion();
         Review r = new Review();

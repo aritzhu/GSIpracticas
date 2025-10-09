@@ -5,12 +5,17 @@
 package Dominio.BModel;
 
 import Dominio.IBModelo.Local;
+import java.util.List;
 /**
  *
  * @author alumno
  */
-public class Restaurante extends Local{
+public class Restaurante extends Local implements Reservable{
     private float precioMenu;
     private int capacidadComensales;
     private int capacidadComensalesMesa;
+
+    public Restaurante(String nombre, Direccion dirección, List<Propietario> dueños) {
+        super(nombre, dirección, dueños);
+    }
 }

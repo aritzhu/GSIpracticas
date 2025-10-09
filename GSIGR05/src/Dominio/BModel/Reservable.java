@@ -4,10 +4,13 @@
  */
 package Dominio.BModel;
 
+import Dominio.IBModelo.Local;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author alumno
  */
-public class Reservable {
-    
+public interface Reservable {
 }

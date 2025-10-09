@@ -14,6 +14,7 @@ public class Direccion {
     private String calle;
     private int numero;
 
+
     public Direccion(String localidad, String provincia, String calle, int numero) {
         this.localidad = localidad;
         this.provincia = provincia;

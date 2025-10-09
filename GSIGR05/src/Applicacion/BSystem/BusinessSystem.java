@@ -10,6 +10,8 @@ import Dominio.IBModelo.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -168,7 +170,14 @@ public class BusinessSystem implements LeisureOffice {
 
     @Override
     public boolean nuevaReserva(Cliente c, Reservable r, LocalDate ld, LocalTime lt) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (r == null) {
+            try {
+                throw new Exception("Error");
+            } catch (Exception ex) {
+                Logger.getLogger(BusinessSystem.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return true;// Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
