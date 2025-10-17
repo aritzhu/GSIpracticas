@@ -10,8 +10,8 @@ import org.jopendocument.dom.spreadsheet.Sheet;
 public class SSTest01 {
 
     public static void main(String[] args) {
-        int filas = 4;
-        int columnas = 6;
+        int filas = 6;
+        int columnas = 4;
         int[][] matriz = new int[filas][columnas];
         Random rnd = new Random();
 

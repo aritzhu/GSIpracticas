@@ -1,46 +1,41 @@
-package GSIlabs.Misc;
-
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
-import javax.swing.table.DefaultTableModel;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 import org.jopendocument.dom.spreadsheet.Sheet;
+import org.jopendocument.dom.spreadsheet.MutableCell;
 
 public class SSTest02 {
 
-    public static void main(String[] args) {
-        int filas = 4;
-        int columnas = 6;
-        int[][] matriz = new int[filas][columnas];
-        Random rnd = new Random();
+    public static void main(String[] args) throws IOException {
+        try{
+            int filas = 4;
+            int filasVacias = 5;
+            int columnas = 6;
+            int columnasVacias = 3;
+            SpreadSheet libro = SpreadSheet.create(1, 10, 10);
+            Sheet hoja = libro.getSheet(0);
 
-        // Rellenar la matriz con datos aleatorios
-        for (int i = 0; i < filas; i++) {
-            for (int j = 0; j < columnas; j++) {
-                matriz[i][j] = rnd.nextInt(10);
-            }
-        }
+            Random rnd = new Random();
 
-        try {
-            // Crear una hoja con 10 filas, 10 columnas y 1 hoja
-            SpreadSheet hoja = SpreadSheet.create(1, 10, 10);
-            Sheet sheet = hoja.getSheet(0);
-
-            // Insertar los datos de la matriz en la hoja
-            for (int i = 0; i < filas; i++) {
-                for (int j = 0; j < columnas; j++) {
-                    sheet.setValueAt(matriz[i][j], i, j);
+            for (int i = filasVacias; i < filas+filasVacias; i++) {
+                for (int j = columnasVacias; j < columnas+columnasVacias; j++) {
+                    int valor = rnd.nextInt(20);
+                    MutableCell<?> celda = hoja.getCellAt(j, i);
+                    celda.setValue(valor);
+                    if (valor > 10) {
+                        celda.setBackgroundColor(Color.BLUE);
+                    } else {
+                        celda.setBackgroundColor(Color.RED);
+                    }
                 }
             }
 
-            // Guardar el archivo ODS
-            File archivoODS = new File("test02.ods");
-            hoja.saveAs(archivoODS);
-
-            System.out.println("Archivo 'test02.ods' creado correctamente.");
-
-        } catch (IOException e) {
+            libro.saveAs(new File("test02.ods"));
+            System.out.println("Archivo 'test02.ods' guardado correctamente.");
+        }
+        catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error al guardar el archivo ODS.");
         }
