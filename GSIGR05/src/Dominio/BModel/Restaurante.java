@@ -18,4 +18,34 @@ public class Restaurante extends Local implements Reservable{
     public Restaurante(String nombre, Direccion dirección, List<Propietario> dueños) {
         super(nombre, dirección, dueños);
     }
+   public Restaurante(String nombre, Direccion direccion, List<Propietario> dueños, float precioMenu, int capacidadComensales, int capacidadComensalesMesa) {
+        super(nombre, direccion, dueños);
+        this.precioMenu = precioMenu;
+        this.capacidadComensales = capacidadComensales;
+        this.capacidadComensalesMesa = capacidadComensalesMesa;
+    }
+
+    public float getPrecioMenu() {
+        return precioMenu;
+    }
+
+    public void setPrecioMenu(float precioMenu) {
+        this.precioMenu = precioMenu;
+    }
+
+    public int getCapacidadComensales() {
+        return capacidadComensales;
+    }
+
+    public void setCapacidadComensales(int capacidadComensales) {
+        this.capacidadComensales = capacidadComensales;
+    }
+
+    public int getCapacidadComensalesMesa() {
+        return capacidadComensalesMesa;
+    }
+
+    public void setCapacidadComensalesMesa(int capacidadComensalesMesa) {
+        this.capacidadComensalesMesa = capacidadComensalesMesa;
+    }
 }

@@ -5,13 +5,18 @@
 package Applicacion.BSystem;
 
 import Applicacion.DTOS.Validators.LocalValidator;
+import Applicacion.Enums.EnumEspecialidadesBar;
 import Dominio.BModel.*;
 import Dominio.IBModelo.*;
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jopendocument.dom.spreadsheet.Sheet;
+import org.jopendocument.dom.spreadsheet.SpreadSheet;
 
 /**
  *
@@ -221,7 +226,12 @@ public class BusinessSystem implements LeisureOffice {
 
     @Override
     public Bar[] listarBares(String ciudad, String provincia) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return database.getLocales().stream()
+            .filter(l -> l instanceof Bar)
+            .map(l -> (Bar) l)
+            .filter(b -> (ciudad == null || ciudad.isEmpty() || b.getDireccion().getLocalidad().equals(ciudad)) &&
+                         (provincia == null || provincia.isEmpty() || b.getDireccion().getProvincia().equals(provincia)))
+            .toArray(Bar[]::new);
     }
 
     @Override
@@ -233,5 +243,71 @@ public class BusinessSystem implements LeisureOffice {
     public Pub[] listarPubs(String ciudad, String provincia) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+    
+    public int importaPubs(File f) {
+    int cont = 0;
+
+    try {
+        SpreadSheet spread = SpreadSheet.createFromFile(f);
+        Sheet hoja = spread.getSheet(0); // única hoja
+        int totalFilas = hoja.getRowCount();
+
+        for (int fila = 0; fila < totalFilas; fila++) {
+            try {
+                Object nombreObj = hoja.getValueAt(0, fila);
+                if (nombreObj == null || nombreObj.toString().trim().isEmpty()) {
+                    continue; // ignorar fila vacía
+                }
+
+                String nombre = nombreObj.toString().trim();
+                String calle = hoja.getValueAt(1, fila).toString().trim();
+                String ciudad = hoja.getValueAt(2, fila).toString().trim();
+                String provincia = hoja.getValueAt(3, fila).toString().trim();
+                Direccion direccion = new Direccion(ciudad, provincia, calle, 0); // nº de calle desconocido
+
+                // Propietarios (todos en una única celda, separados por comas)
+                List<Propietario> dueños = new ArrayList<>();
+                Object propObj = hoja.getValueAt(4, fila);
+                if (propObj != null && !propObj.toString().trim().isEmpty()) {
+                    String[] nicks = propObj.toString().trim().split("\\s*,\\s*");
+                    for (String nick : nicks) {
+                        Propietario p = new Propietario(new ArrayList<>(), "ID-" + nick, nick, "", 0, null);
+                        dueños.add(p);
+                    }
+                }
+
+                // Especialidades: columnas 5 en adelante
+                List<EnumEspecialidadesBar> especialidades = new ArrayList<>();
+                for (int col = 5; col < hoja.getColumnCount(); col++) {
+                    Object espObj = hoja.getValueAt(col, fila);
+                    if (espObj == null || espObj.toString().trim().isEmpty()) break;
+                    try {
+                        especialidades.add(EnumEspecialidadesBar.valueOf(espObj.toString().trim()));
+                    } catch (IllegalArgumentException e) {
+                        // ignorar especialidad no válida
+                    }
+                }
+
+                // Crear bar y añadir
+                Bar bar = new Bar(nombre, direccion, dueños, 0, especialidades);
+                if (nuevoLocal(bar)) cont++;
+
+            } catch (Exception filaEx) {
+                // capturar cualquier error en esta fila y continuar
+                System.err.println("Error en fila " + fila + ": " + filaEx.getMessage());
+            }
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return cont;
+}
+
+
+
+
+
     
 }

@@ -9,5 +9,9 @@ package Applicacion.Enums;
  * @author alumno
  */
 public enum EnumEspecialidadesBar {
-    Vino, Cerveza, Oihan, Sancet
+    Oihan, Sancet,
+    TAPAS,
+    CERVEZAS,
+    VINOS,
+    COCTELES
 }
