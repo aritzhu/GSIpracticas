@@ -6,7 +6,8 @@
  * Nota: esta documento no contiene tildes ni caracteres castellanos.
  */
 package Applicacion.BSystem;
-import BModel.*;
+import Dominio.BModel.*;
+import Dominio.IBModelo.*;
 
 /**
  * Interfaz de acceso inteligente a BSystem

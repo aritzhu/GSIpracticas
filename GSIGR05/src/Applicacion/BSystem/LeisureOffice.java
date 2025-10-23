@@ -7,9 +7,10 @@
  */
 package Applicacion.BSystem;
 
-import BModel.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import Dominio.BModel.*;
+import Dominio.IBModelo.*;
 
 /**
  * Interfaz de acceso a BSystem
@@ -90,7 +91,7 @@ public interface LeisureOffice {
      * @param ld la fecha de visita
      * @return True si y solo si la review existe.
      */
-    public boolean existeRewiew(Usuario u, Local l, LocalDate ld);
+    public boolean existeRewiew(Review r);
             
     
     
@@ -280,5 +281,7 @@ public interface LeisureOffice {
      * @return La lista de bares, potencialmente de longitud 0.
      */
     public Pub[] listarPubs(String ciudad, String provincia);
+    
+    
     
 }

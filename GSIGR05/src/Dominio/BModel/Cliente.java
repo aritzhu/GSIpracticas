@@ -5,11 +5,15 @@
 package Dominio.BModel;
 
 import Dominio.IBModelo.Usuario;
+import java.util.Date;
+import java.util.List;
 
-/**
- *
- * @author alumno
- */
+
 public class Cliente extends Usuario { 
-    
+    private List<Review> reviews;
+
+    public Cliente(List<Review> reviews, String ID, String nick, String contrasenia, int edad, Date fechaNacimineto) {
+        super(ID, nick, contrasenia, edad, fechaNacimineto);
+        this.reviews = reviews;
+    }
 }
