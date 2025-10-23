@@ -1,4 +1,4 @@
-package GSIlabs.Misc;
+package GSILabs.Misc;
 
 import Applicacion.BSystem.BusinessSystem;
 import Dominio.BModel.Bar;

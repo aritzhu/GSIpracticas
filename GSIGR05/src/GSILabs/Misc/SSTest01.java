@@ -1,4 +1,4 @@
-package GSIlabs.Misc;
+package GSILabs.Misc;
 
 import java.io.File;
 import java.io.IOException;
