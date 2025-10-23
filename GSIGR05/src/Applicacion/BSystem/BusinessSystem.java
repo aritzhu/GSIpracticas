@@ -245,65 +245,91 @@ public class BusinessSystem implements LeisureOffice {
     }
     
     public int importaPubs(File f) {
-    int cont = 0;
+        int cont = 0;  // Contador para el número de bares importados correctamente
+        int contgeneral = 0;
+        int cont2 = 0;
+        try {
+            // Se crea una instancia de SpreadSheet a partir del archivo proporcionado
+            SpreadSheet spread = SpreadSheet.createFromFile(f);
 
-    try {
-        SpreadSheet spread = SpreadSheet.createFromFile(f);
-        Sheet hoja = spread.getSheet(0); // única hoja
-        int totalFilas = hoja.getRowCount();
+            // Se obtiene la primera hoja del archivo (se asume que solo hay una hoja)
+            Sheet hoja = spread.getSheet(0); 
 
-        for (int fila = 0; fila < totalFilas; fila++) {
-            try {
-                Object nombreObj = hoja.getValueAt(0, fila);
-                if (nombreObj == null || nombreObj.toString().trim().isEmpty()) {
-                    continue; // ignorar fila vacía
-                }
+            // Se obtiene el número total de filas en la hoja
+            int totalFilas = hoja.getRowCount();
 
-                String nombre = nombreObj.toString().trim();
-                String calle = hoja.getValueAt(1, fila).toString().trim();
-                String ciudad = hoja.getValueAt(2, fila).toString().trim();
-                String provincia = hoja.getValueAt(3, fila).toString().trim();
-                Direccion direccion = new Direccion(ciudad, provincia, calle, 0); // nº de calle desconocido
+            // Iterar sobre todas las filas de la hoja
+            for (int fila = 0; fila < totalFilas; fila++) {
+                try {
+                    // Obtener el valor de la primera columna (nombre del bar)
+                    Object nombreObj = hoja.getValueAt(0, fila);
 
-                // Propietarios (todos en una única celda, separados por comas)
-                List<Propietario> dueños = new ArrayList<>();
-                Object propObj = hoja.getValueAt(4, fila);
-                if (propObj != null && !propObj.toString().trim().isEmpty()) {
-                    String[] nicks = propObj.toString().trim().split("\\s*,\\s*");
-                    for (String nick : nicks) {
-                        Propietario p = new Propietario(new ArrayList<>(), "ID-" + nick, nick, "", 0, null);
-                        dueños.add(p);
+                    // Si el nombre está vacío o nulo, se ignora la fila
+                    if (nombreObj == null || nombreObj.toString().trim().isEmpty()) {
+                        continue; // Ignorar fila vacía
                     }
-                }
 
-                // Especialidades: columnas 5 en adelante
-                List<EnumEspecialidadesBar> especialidades = new ArrayList<>();
-                for (int col = 5; col < hoja.getColumnCount(); col++) {
-                    Object espObj = hoja.getValueAt(col, fila);
-                    if (espObj == null || espObj.toString().trim().isEmpty()) break;
-                    try {
-                        especialidades.add(EnumEspecialidadesBar.valueOf(espObj.toString().trim()));
-                    } catch (IllegalArgumentException e) {
-                        // ignorar especialidad no válida
+                    // Se extrae el nombre del bar, limpiando espacios en blanco
+                    String nombre = nombreObj.toString().trim();
+
+                    // Obtener los valores de las siguientes columnas (dirección)
+                    String calle = hoja.getValueAt(1, fila).toString().trim();
+                    String ciudad = hoja.getValueAt(2, fila).toString().trim();
+                    String provincia = hoja.getValueAt(3, fila).toString().trim();
+
+                    // Crear un objeto Direccion con los valores extraídos
+                    Direccion direccion = new Direccion(ciudad, provincia, calle, 0); // El número de la calle es desconocido
+
+                    // Listado de propietarios (se asume que están en una única celda, separados por comas)
+                    List<Propietario> dueños = new ArrayList<>();
+                    Object propObj = hoja.getValueAt(4, fila);
+                    if (propObj != null && !propObj.toString().trim().isEmpty()) {
+                        // Si hay propietarios, se extraen los nicks de la celda
+                        String[] nicks = propObj.toString().trim().split("\\s*,\\s*");
+                        // Se crea un propietario para cada uno de los nicks
+                        for (String nick : nicks) {
+                            Propietario p = new Propietario(new ArrayList<>(), "ID-" + nick, nick, "", 0, null);
+                            dueños.add(p);
+                        }
                     }
+
+                    // Especialidades: las columnas 5 en adelante corresponden a las especialidades
+                    List<EnumEspecialidadesBar> especialidades = new ArrayList<>();
+                    for (int col = 5; col < hoja.getColumnCount(); col++) {
+                        // Obtener el valor de cada columna de especialidades
+                        Object espObj = hoja.getValueAt(col, fila);
+                        // Si la celda está vacía, se termina de procesar las especialidades
+                        if (espObj == null || espObj.toString().trim().isEmpty()) break;
+                        try {
+                            // Intentar convertir la especialidad a un valor válido del enum
+                            especialidades.add(EnumEspecialidadesBar.valueOf(espObj.toString().trim()));
+                        } catch (IllegalArgumentException e) {
+                            // Si la especialidad no es válida, se ignora sin lanzar excepción
+                        }
+                    }
+
+                    // Crear un objeto Bar con la información recolectada
+                    Bar bar = new Bar(nombre, direccion, dueños, 0, especialidades);
+                    contgeneral++;
+                    // Verificar si el bar es nuevo, si es así se incrementa el contador
+                    if (nuevoLocal(bar)) cont++;
+
+
+                } catch (Exception filaEx) {
+                    // Si ocurre un error al procesar la fila, se captura y se muestra un mensaje de error
+                    System.err.println("Error en fila " + fila + ": " + filaEx.getMessage());
+                    System.out.println("Error en fila " + fila + ": " + filaEx.getMessage());
                 }
-
-                // Crear bar y añadir
-                Bar bar = new Bar(nombre, direccion, dueños, 0, especialidades);
-                if (nuevoLocal(bar)) cont++;
-
-            } catch (Exception filaEx) {
-                // capturar cualquier error en esta fila y continuar
-                System.err.println("Error en fila " + fila + ": " + filaEx.getMessage());
             }
+
+        } catch (Exception e) {
+            // Capturar cualquier error al leer el archivo o procesar la hoja
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        // Retornar el número total de bares importados correctamente
+        return cont;
     }
-
-    return cont;
-}
 
 
 

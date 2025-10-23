@@ -9,9 +9,33 @@ package Applicacion.Enums;
  * @author alumno
  */
 public enum EnumEspecialidadesBar {
-    Oihan, Sancet,
     TAPAS,
     CERVEZAS,
     VINOS,
-    COCTELES
+    COCTELES, Cenas, 
+Comida, 
+Quesadillas, 
+Crudivoro, 
+Cubatas, 
+Fritos, 
+Queso, 
+Embutidos, 
+Cerveza, 
+Vegano, 
+Verduras, 
+Torreznos, 
+Albondigas, 
+Asiatica, 
+Olivas, 
+Camarones, 
+Vermout, 
+Mexicana, 
+Croquetas, 
+Catalana, 
+Calamares, 
+Carne, 
+Tapas, 
+Vino, 
+Chorizo, 
+Desayuno
 }

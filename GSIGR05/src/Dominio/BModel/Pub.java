@@ -1,7 +1,6 @@
 package Dominio.BModel;
 
 import Dominio.IBModelo.Local;
-import Tester.java;
 import java.util.List;
 
 public class Pub extends Local implements Reservable {

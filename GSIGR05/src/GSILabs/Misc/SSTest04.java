@@ -3,7 +3,6 @@ package GSILabs.Misc;
 import Applicacion.BSystem.BusinessSystem;
 import Dominio.BModel.*;
 import Applicacion.Enums.EnumEspecialidadesBar;
-import Tester.java;
 import org.jopendocument.dom.spreadsheet.*;
 
 import java.io.File;
