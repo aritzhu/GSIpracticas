@@ -5,12 +5,16 @@
 package Dominio.BModel;
 
 import Dominio.IBModelo.Local;
+import GSILabs.Serializable.XMLRepresentable;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 /**
  *
  * @author alumno
  */
-public class Restaurante extends Local implements Reservable{
+public class Restaurante extends Local implements Reservable, XMLRepresentable{
     private float precioMenu;
     private int capacidadComensales;
     private int capacidadComensalesMesa;
@@ -47,5 +51,39 @@ public class Restaurante extends Local implements Reservable{
 
     public void setCapacidadComensalesMesa(int capacidadComensalesMesa) {
         this.capacidadComensalesMesa = capacidadComensalesMesa;
+    }
+    
+    @Override
+    public String toXML() {
+        StringBuilder xml = new StringBuilder();
+        xml.append("<Restaurante>\n");
+
+        // Reutilizamos XML de Local
+        String localXML = super.toXML();
+        localXML = localXML.replaceFirst("<Local>", "").replaceFirst("</Local>$", "");
+        xml.append(localXML);
+
+        // Atributos específicos de Restaurante
+        xml.append("   <PrecioMenu>").append(precioMenu).append("</PrecioMenu>\n");
+        xml.append("   <CapacidadComensales>").append(capacidadComensales).append("</CapacidadComensales>\n");
+        xml.append("   <CapacidadComensalesMesa>").append(capacidadComensalesMesa).append("</CapacidadComensalesMesa>\n");
+
+        xml.append("</Restaurante>\n");
+        return xml.toString();
+    }
+
+    @Override
+    public boolean saveToXML(File f) {
+        try (FileWriter fw = new FileWriter(f)) {
+            fw.write(this.toXML());
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean saveToXML(String filePath) {
+        return saveToXML(new File(filePath));
     }
 }

@@ -8,6 +8,9 @@ import Dominio.BModel.Direccion;
 import Dominio.BModel.Propietario;
 
 import Dominio.BModel.Review;
+import GSILabs.Serializable.XMLRepresentable;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,7 +21,7 @@ import java.util.List;
  *
  * @author alumno
  */
-public class Local {
+public class Local implements XMLRepresentable{
     private String nombre; 
     private Direccion direccion; 
     private List<Propietario> dueños; // maximo 3 minimo 1
@@ -83,6 +86,52 @@ public class Local {
 
     public List<Review> getReviews() {
         return reviews;
+    }
+    
+    
+    @Override
+    public String toXML() {
+        StringBuilder xml = new StringBuilder();
+        xml.append("<Local>\n");
+        xml.append("   <Nombre>").append(nombre).append("</Nombre>\n");
+        if (direccion != null)
+            xml.append(direccion.toXML()); // asumiendo que Direccion tiene toXML()
+
+        // Dueños
+        xml.append("   <Duenos>\n");
+        if (dueños != null) {
+            for (Propietario p : dueños) {
+                xml.append("       <Propietario id=\"").append(p.getID()).append("\"/>\n");
+            }
+        }
+        xml.append("   </Duenos>\n");
+
+        // Reviews
+        xml.append("   <Reviews>\n");
+        if (reviews != null) {
+            for (Review r : reviews) {
+                xml.append(r.toXML());
+            }
+        }
+        xml.append("   </Reviews>\n");
+
+        xml.append("</Local>\n");
+        return xml.toString();
+    }
+
+    @Override
+    public boolean saveToXML(File f) {
+        try (FileWriter fw = new FileWriter(f)) {
+            fw.write(this.toXML());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean saveToXML(String filePath) {
+        return saveToXML(new File(filePath));
     }
     
 }

@@ -6,13 +6,17 @@ package Dominio.BModel;
 
 import Applicacion.Enums.EnumEspecialidadesBar;
 import Dominio.IBModelo.Local;
+import GSILabs.Serializable.XMLRepresentable;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 /**
  *
  * @author alumno
  */
-public class Bar extends Local implements Reservable{
+public class Bar extends Local implements Reservable, XMLRepresentable {
     private float precioMenu;
     private List<EnumEspecialidadesBar> especialidades;
 
@@ -41,5 +45,45 @@ public class Bar extends Local implements Reservable{
     public void setEspecialidades(List<EnumEspecialidadesBar> especialidades) {
         this.especialidades = especialidades;
     }
+    
+    @Override
+    public String toXML() {
+        StringBuilder xml = new StringBuilder();
+        xml.append("<Bar>\n");
 
+        // Reutilizamos XML de Local
+        String localXML = super.toXML();
+        // Eliminamos etiquetas <Local> para no duplicarlas
+        localXML = localXML.replaceFirst("<Local>", "").replaceFirst("</Local>$", "");
+        xml.append(localXML);
+
+        // Añadimos atributos específicos de Bar
+        xml.append("   <PrecioMenu>").append(precioMenu).append("</PrecioMenu>\n");
+
+        xml.append("   <Especialidades>\n");
+        if (especialidades != null) {
+            for (EnumEspecialidadesBar esp : especialidades) {
+                xml.append("       <Especialidad>").append(esp.toString()).append("</Especialidad>\n");
+            }
+        }
+        xml.append("   </Especialidades>\n");
+
+        xml.append("</Bar>\n");
+        return xml.toString();
+    }
+
+    @Override
+    public boolean saveToXML(File f) {
+        try (FileWriter fw = new FileWriter(f)) {
+            fw.write(this.toXML());
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean saveToXML(String filePath) {
+        return saveToXML(new File(filePath));
+    }
 }
