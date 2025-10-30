@@ -8,7 +8,10 @@ import Applicacion.DTOS.Validators.LocalValidator;
 import Applicacion.Enums.EnumEspecialidadesBar;
 import Dominio.BModel.*;
 import Dominio.IBModelo.*;
+import GSILabs.Serializable.XMLRepresentable;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -22,7 +25,7 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
  *
  * @author alumno
  */
-public class BusinessSystem implements LeisureOffice {
+public class BusinessSystem implements LeisureOffice, XMLRepresentable {
     private EjecuctionTimeDataBase database;
 
     public BusinessSystem() {
@@ -330,10 +333,75 @@ public class BusinessSystem implements LeisureOffice {
         // Retornar el número total de bares importados correctamente
         return cont;
     }
-
-
-
-
-
     
+    @Override
+    public String toXML() {
+        StringBuilder xml = new StringBuilder();
+        xml.append("<BusinessSystem>\n");
+
+        xml.append("   <Usuarios>\n");
+        for (Usuario usuario : database.getUsuarios()) {
+            xml.append(usuario.toXML());
+        }
+        xml.append("   </Usuarios>\n");
+
+        xml.append("   <Reviews>\n");
+        for (Review review : database.getReviews()) {
+            xml.append(review.toXML());
+        }
+        xml.append("   </Reviews>\n");
+
+        xml.append("   <Contestaciones>\n");
+        for (Contestacion contestacion : database.getContestaciones()) {
+            xml.append(contestacion.toXML());
+        }
+        xml.append("   </Contestaciones>\n");
+
+        xml.append("   <Locales>\n");
+        for (Local local : database.getLocales()) {
+            xml.append(local.toXML());
+        }
+        xml.append("   </Locales>\n");
+
+        xml.append("   <Bares>\n");
+        for (Bar bar : database.getLocales().stream().filter(l -> l instanceof Bar).map(l -> (Bar) l).toArray(Bar[]::new)) {
+            xml.append(bar.toXML());
+        }
+        xml.append("   </Bares>\n");
+
+        xml.append("   <Restaurantes>\n");
+        for (Restaurante restaurante : database.getLocales().stream().filter(l -> l instanceof Restaurante).map(l -> (Restaurante) l).toArray(Restaurante[]::new)) {
+            xml.append(restaurante.toXML());
+        }
+        xml.append("   </Restaurantes>\n");
+
+        xml.append("   <Pubs>\n");
+        for (Pub pub : database.getLocales().stream().filter(l -> l instanceof Pub).map(l -> (Pub) l).toArray(Pub[]::new)) {
+            xml.append(pub.toXML());
+        }
+        xml.append("   </Pubs>\n");
+
+        xml.append("</BusinessSystem>\n");
+        return xml.toString();
+    }
+    @Override
+    public boolean saveToXML(File f) {
+        try (FileWriter fw = new FileWriter(f)) {
+            fw.write(this.toXML());
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean saveToXML(String filePath) {
+        try (FileWriter fw = new FileWriter(new File(filePath))) {
+            fw.write(this.toXML());
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
 }
+
