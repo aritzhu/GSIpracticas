@@ -89,5 +89,30 @@ public class Review implements XMLRepresentable{
     public boolean saveToXML(String filePath) {
         return saveToXML(new File(filePath));
     }
+    public int getValoracion() {
+        return valoracion;
+    }
+
+    public void setValoracion(int valoracion) {
+        this.valoracion = valoracion;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
+    }
+
+    public Date getFechaEscritura() {
+        return fechaEscritura;
+    }
+
+    public void setFechaEscritura(Date fechaEscritura) {
+        this.fechaEscritura = fechaEscritura;
+    }
+    
+    
 }
 

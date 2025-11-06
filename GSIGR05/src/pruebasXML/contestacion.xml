@@ -1,0 +1,23 @@
+<Contestacion>
+    <dueño>
+        <id>p1</id>
+        <nick>antonio</nick>
+        <contrasenia>abc123</contrasenia>
+        <edad>45</edad>
+        <fechaNacimiento>1980-04-22</fechaNacimiento>
+    </dueño>
+    <review>
+        <valoracion>5</valoracion>
+        <comentario>Servicio excelente</comentario>
+        <fechaVisita>2024-06-01</fechaVisita>
+        <autor>
+            <id>p2</id>
+            <nick>maria</nick>
+            <contrasenia>xyz789</contrasenia>
+            <edad>32</edad>
+            <fechaNacimiento>1992-03-15</fechaNacimiento>
+        </autor>
+    </review>
+    <contestacion>Muchas gracias por su reseña</contestacion>
+    <fechaEscritura>2024-06-10</fechaEscritura>
+</Contestacion>

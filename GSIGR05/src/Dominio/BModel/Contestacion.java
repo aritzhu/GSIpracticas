@@ -59,4 +59,19 @@ public class Contestacion implements XMLRepresentable{
     public boolean saveToXML(String filePath) {
         return saveToXML(new File(filePath));
     }
+    public Propietario getDueño() {
+    return this.dueño;
+}
+
+public Review getReview() {
+    return this.review;
+}
+
+public String getContestacion() {
+    return this.contestacion;
+}
+
+public java.util.Date getFechaEscritura() {
+    return this.fechaEscritura;
+}
 }

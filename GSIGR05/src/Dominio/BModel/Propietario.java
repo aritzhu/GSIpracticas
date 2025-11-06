@@ -71,4 +71,35 @@ public class Propietario extends Usuario implements XMLRepresentable{
     public boolean saveToXML(String filePath) {
         return saveToXML(new File(filePath));
     }
+    public Propietario(List<Local> locales, List<Contestacion> contestaciones, List<Review> reviews,
+                   String ID, String nick, String contrasenia, int edad, Date fechaNacimiento) {
+    super(ID, nick, contrasenia, edad, fechaNacimiento);
+    this.locales = locales != null ? locales : new java.util.ArrayList<>();
+    this.contestaciones = contestaciones != null ? contestaciones : new java.util.ArrayList<>();
+}
+    public Propietario(String ID, String nick, String contrasenia, int edad, Date fechaNacimineto,
+                   List<Local> locales, List<Contestacion> contestaciones) {
+    super(ID, nick, contrasenia, edad, fechaNacimineto);
+    this.locales = locales;
+    this.contestaciones = contestaciones;
+}
+
+    public List<Local> getLocales() {
+        return locales;
+    }
+
+    public void setLocales(List<Local> locales) {
+        this.locales = locales;
+    }
+
+    public List<Contestacion> getContestaciones() {
+        return contestaciones;
+    }
+
+    public void setContestaciones(List<Contestacion> contestaciones) {
+        this.contestaciones = contestaciones;
+    }
+    
+    
+    
 }

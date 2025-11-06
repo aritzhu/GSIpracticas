@@ -1,0 +1,7 @@
+<Cliente>
+    <id>cli001</id>
+    <nick>inaki123</nick>
+    <contrasenia>abc123</contrasenia>
+    <edad>25</edad>
+    <fechaNacimiento>2000-02-10</fechaNacimiento>
+</Cliente>

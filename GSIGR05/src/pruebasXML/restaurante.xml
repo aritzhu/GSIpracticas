@@ -1,0 +1,20 @@
+<Restaurante>
+    <nombre>Asador Etxea</nombre>
+    <direccion>
+        <localidad>Vitoria</localidad>
+        <provincia>Araba</provincia>
+        <calle>Cercas Bajas</calle>
+        <numero>12</numero>
+    </direccion>
+    <precioMenu>28.50</precioMenu>
+    <capacidadComensales>150</capacidadComensales>
+    <capacidadComensalesMesa>6</capacidadComensalesMesa>
+
+    <propietario>
+        <id>P2</id>
+        <nick>mikel</nick>
+        <contrasenia>pass987</contrasenia>
+        <edad>43</edad>
+        <fechaNacimiento>1982-07-20</fechaNacimiento>
+    </propietario>
+</Restaurante>
