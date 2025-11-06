@@ -1,4 +1,4 @@
-package GSILabs.Pruebas_p_3_e_6;
+package GSILabs.Pruebas_practica3_e5;
 
 import Applicacion.BSystem.BusinessSystem;
 import GSILabs.persistence.XMLParsingException;

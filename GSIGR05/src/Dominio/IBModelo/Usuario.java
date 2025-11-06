@@ -94,8 +94,8 @@ public class Usuario implements XMLRepresentable{
         xml.append("<Usuario id=\"").append(ID).append("\">\n");
         xml.append("   <Nick>").append(nick).append("</Nick>\n");
         xml.append("   <Edad>").append(edad).append("</Edad>\n");
-        if (fechaNacimineto != null)
-            xml.append("   <FechaNacimiento>").append(sdf.format(fechaNacimineto)).append("</FechaNacimiento>\n");
+        if (fechaNacimiento != null)
+            xml.append("   <FechaNacimiento>").append(sdf.format(fechaNacimiento)).append("</FechaNacimiento>\n");
         xml.append("</Usuario>\n");
 
         return xml.toString();
