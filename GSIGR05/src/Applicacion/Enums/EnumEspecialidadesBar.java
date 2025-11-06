@@ -9,7 +9,6 @@ package Applicacion.Enums;
  * @author alumno
  */
 public enum EnumEspecialidadesBar {
-    Oihan, Sancet,
     TAPAS,
     CERVEZAS,
     VINOS,

@@ -21,7 +21,9 @@ public class LocalValidator {
         for (Local l : locales) 
         {
             if (l.getDireccion().getCalle().equals(local.getDireccion().getCalle()) 
-                    && l.getDireccion().getNumero() == local.getDireccion().getNumero() )
+                    && l.getDireccion().getNumero() == local.getDireccion().getNumero()
+                    && l.getDireccion().getLocalidad().equals(local.getDireccion().getLocalidad()) 
+                    &&l.getDireccion().getProvincia().equals(local.getDireccion().getProvincia()))
                 return false;
         }
         return true;

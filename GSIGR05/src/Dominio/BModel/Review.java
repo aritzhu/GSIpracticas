@@ -4,6 +4,10 @@
  */
 package Dominio.BModel;
 
+import GSILabs.Serializable.XMLRepresentable;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -11,7 +15,7 @@ import java.util.Date;
  * @author alumno
  */
 
-public class Review {
+public class Review implements XMLRepresentable{
     private int valoracion;
     private String comentario;
     private Date fechaVisita;
@@ -35,14 +39,56 @@ public class Review {
     }
     
     
-    public Propietario getAutor() {
-        return autor;
+     public int getValoracion() {
+        return valoracion;
+    }
+
+    public String getComentario() {
+        return comentario;
     }
 
     public Date getFechaVisita() {
         return fechaVisita;
     }
 
+    public Date getFechaEscritura() {
+        return fechaEscritura;
+    }
+
+    public Propietario getAutor() {
+        return autor;
+    }
+    
+    @Override
+    public String toXML() {
+        StringBuilder xml = new StringBuilder();
+        xml.append("<Review>\n");
+        xml.append("   <Valoracion>").append(valoracion).append("</Valoracion>\n");
+        xml.append("   <Comentario>").append(comentario).append("</Comentario>\n");
+        if (fechaVisita != null)
+            xml.append("   <FechaVisita>").append(fechaVisita).append("</FechaVisita>\n");
+        if (fechaEscritura != null)
+            xml.append("   <FechaEscritura>").append(fechaEscritura).append("</FechaEscritura>\n");
+        if (autor != null)
+            xml.append("   <Autor id=\"").append(autor.getID()).append("\"/>\n");
+        xml.append("</Review>\n");
+        return xml.toString();
+    }
+
+    @Override
+    public boolean saveToXML(File f) {
+        try (FileWriter fw = new FileWriter(f)) {
+            fw.write(this.toXML());
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean saveToXML(String filePath) {
+        return saveToXML(new File(filePath));
+    }
     public int getValoracion() {
         return valoracion;
     }

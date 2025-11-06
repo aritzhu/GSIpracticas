@@ -4,6 +4,11 @@
  */
 package Dominio.IBModelo;
 
+import GSILabs.Serializable.XMLRepresentable;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
@@ -13,7 +18,7 @@ import java.util.Date;
  *
  * @author alumno
  */
-public class Usuario {
+public class Usuario implements XMLRepresentable{
     private String ID;
     private String nick; 
     private String contrasenia;
@@ -81,5 +86,33 @@ public class Usuario {
         return anos_usuario >= 14;
     }
     
-    
+    @Override
+    public String toXML() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        StringBuilder xml = new StringBuilder();
+        xml.append("<Usuario id=\"").append(ID).append("\">\n");
+        xml.append("   <Nick>").append(nick).append("</Nick>\n");
+        xml.append("   <Edad>").append(edad).append("</Edad>\n");
+        if (fechaNacimineto != null)
+            xml.append("   <FechaNacimiento>").append(sdf.format(fechaNacimineto)).append("</FechaNacimiento>\n");
+        xml.append("</Usuario>\n");
+
+        return xml.toString();
+    }
+
+    @Override
+    public boolean saveToXML(File f) {
+        try (FileWriter fw = new FileWriter(f)) {
+            fw.write(this.toXML());
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean saveToXML(String filePath) {
+        return saveToXML(new File(filePath));
+    }
 }
