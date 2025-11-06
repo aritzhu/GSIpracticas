@@ -42,5 +42,31 @@ public class Review {
     public Date getFechaVisita() {
         return fechaVisita;
     }
+
+    public int getValoracion() {
+        return valoracion;
+    }
+
+    public void setValoracion(int valoracion) {
+        this.valoracion = valoracion;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
+    }
+
+    public Date getFechaEscritura() {
+        return fechaEscritura;
+    }
+
+    public void setFechaEscritura(Date fechaEscritura) {
+        this.fechaEscritura = fechaEscritura;
+    }
+    
+    
 }
 

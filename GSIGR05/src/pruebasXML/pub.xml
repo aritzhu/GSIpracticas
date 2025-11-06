@@ -1,0 +1,19 @@
+<Pub>
+    <nombre>Pub Central</nombre>
+    <direccion>
+        <localidad>Bilbao</localidad>
+        <provincia>Bizkaia</provincia>
+        <calle>Licenciado Poza</calle>
+        <numero>47</numero>
+    </direccion>
+    <horaApertura>18</horaApertura>
+    <horaCierre>3</horaCierre>
+
+    <propietario>
+        <id>P1</id>
+        <nick>juancho</nick>
+        <contrasenia>1234</contrasenia>
+        <edad>34</edad>
+        <fechaNacimiento>1990-05-11</fechaNacimiento>
+    </propietario>
+</Pub>

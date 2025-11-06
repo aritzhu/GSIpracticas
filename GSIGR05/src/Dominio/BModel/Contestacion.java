@@ -25,5 +25,19 @@ public class Contestacion {
     public Contestacion()
     {
     }
-    
+    public Propietario getDueño() {
+    return this.dueño;
+}
+
+public Review getReview() {
+    return this.review;
+}
+
+public String getContestacion() {
+    return this.contestacion;
+}
+
+public java.util.Date getFechaEscritura() {
+    return this.fechaEscritura;
+}
 }

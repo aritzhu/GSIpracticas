@@ -1,0 +1,13 @@
+<Review>
+    <valoracion>5</valoracion>
+    <comentario>Excelente servicio y comida.</comentario>
+    <fechaVisita>2024-10-12</fechaVisita>
+    <fechaEscritura>2024-10-15</fechaEscritura>
+    <autor>
+        <id>p001</id>
+        <nick>propietario123</nick>
+        <contrasenia>abc123</contrasenia>
+        <edad>45</edad>
+        <fechaNacimiento>1979-03-10</fechaNacimiento>
+    </autor>
+</Review>

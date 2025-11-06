@@ -8,6 +8,8 @@ import Applicacion.DTOS.Validators.LocalValidator;
 import Applicacion.Enums.EnumEspecialidadesBar;
 import Dominio.BModel.*;
 import Dominio.IBModelo.*;
+import GSILabs.persistence.XMLParser;
+import GSILabs.persistence.XMLParsingException;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -17,6 +19,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jopendocument.dom.spreadsheet.Sheet;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
+
+import java.io.File;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import GSILabs.persistence.XMLParsingException;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -305,8 +318,113 @@ public class BusinessSystem implements LeisureOffice {
     return cont;
 }
 
+public static BusinessSystem parseXMLFile(File f) throws XMLParsingException {
+    BusinessSystem bs = new BusinessSystem();
+    if(!bs.loadXMLFile(f))
+        throw new XMLParsingException("No se pudo cargar el XML");
+    return bs;
+}
 
+public boolean loadXMLFile(File f) {
+    try {
 
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        Document doc = dBuilder.parse(f);
+        doc.getDocumentElement().normalize();
+
+        Element root = doc.getDocumentElement();
+
+        // === EJERCICIO 5 === XML GLOBAL BUSINESS SYSTEM
+        if(root.getTagName().equals("BusinessSystem")){
+
+            NodeList bares = root.getElementsByTagName("Bar");
+            for(int i=0;i<bares.getLength();i++){
+                Bar b = XMLParser.parseBarBS((Element)bares.item(i));
+                this.nuevoLocal(b);
+            }
+
+            NodeList pubs = root.getElementsByTagName("Pub");
+            for(int i=0;i<pubs.getLength();i++){
+                Pub p = XMLParser.parsePubBS((Element)pubs.item(i));
+                this.nuevoLocal(p);
+            }
+
+            NodeList restaurantes = root.getElementsByTagName("Restaurante");
+            for(int i=0;i<restaurantes.getLength();i++){
+                Restaurante r = XMLParser.parseRestauranteBS((Element)restaurantes.item(i));
+                this.nuevoLocal(r);
+            }
+
+            NodeList clientes = root.getElementsByTagName("Cliente");
+            for(int i=0;i<clientes.getLength();i++){
+                Cliente c = XMLParser.parseClienteBS((Element)clientes.item(i));
+                this.nuevoUsuario(c);
+            }
+
+            NodeList propietarios = root.getElementsByTagName("Propietario");
+            for(int i=0;i<propietarios.getLength();i++){
+                Propietario pr = XMLParser.parsePropietarioBS((Element)propietarios.item(i));
+                this.nuevoUsuario(pr);
+            }
+
+            NodeList reviews = root.getElementsByTagName("Review");
+            for(int i=0;i<reviews.getLength();i++){
+                Review rv = XMLParser.parseReviewBS((Element)reviews.item(i));
+                this.nuevaReview(rv);
+            }
+
+            NodeList contestaciones = root.getElementsByTagName("Contestacion");
+            for(int i=0;i<contestaciones.getLength();i++){
+                Contestacion co = XMLParser.parseContestacionBS((Element)contestaciones.item(i));
+                this.database.getContestaciones().add(co);
+            }
+
+            NodeList reservas = root.getElementsByTagName("Reserva");
+            for(int i=0;i<reservas.getLength();i++){
+                Reserva rs = XMLParser.parseReservaBS((Element)reservas.item(i));
+                this.database.getReservas().add(rs);
+            }
+
+            return true;
+        }
+
+        // === EJERCICIO 3 === uno por fichero
+        switch(root.getTagName()) {
+
+            case "Bar":
+                return this.nuevoLocal(XMLParser.parseBar(f));
+
+            case "Pub":
+                return this.nuevoLocal(XMLParser.parsePub(f));
+
+            case "Restaurante":
+                return this.nuevoLocal(XMLParser.parseRestaurante(f));
+
+            case "Cliente":
+                return this.nuevoUsuario(XMLParser.parseCliente(f));
+
+            case "Propietario":
+                return this.nuevoUsuario(XMLParser.parsePropietario(f));
+
+            case "Review":
+                return this.nuevaReview(XMLParser.parseReview(f));
+
+            case "Contestacion":
+                this.database.getContestaciones().add(XMLParser.parseContestacion(f));
+                return true;
+
+            case "Reserva":
+                this.database.getReservas().add(XMLParser.parseReserva(f));
+                return true;
+        }
+
+    } catch(Exception ex) {
+        ex.printStackTrace();
+        return false;
+    }
+    return false;
+}
 
 
     

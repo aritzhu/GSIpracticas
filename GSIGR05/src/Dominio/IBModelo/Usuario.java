@@ -18,14 +18,14 @@ public class Usuario {
     private String nick; 
     private String contrasenia;
     private int edad; // > 14
-    private Date fechaNacimineto;
+    private Date fechaNacimiento;
   
     public Usuario(String ID, String nick, String contrasenia, int edad, Date fechaNacimineto) {
         this.ID = ID;
         this.nick = nick;
         this.contrasenia = contrasenia;
         this.edad = edad;
-        this.fechaNacimineto = fechaNacimineto;
+        this.fechaNacimiento = fechaNacimineto;
     }
     public String getID() {
         return ID;
@@ -59,18 +59,18 @@ public class Usuario {
         this.edad = edad;
     }
 
-    public Date getFechaNacimineto() {
-        return fechaNacimineto;
+    public Date getFechaNacimiento() {
+        return fechaNacimiento;
     }
 
-    public void setFechaNacimineto(Date fechaNacimineto) {
-        this.fechaNacimineto = fechaNacimineto;
+    public void setFechaNacimiento(Date fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
     }
 
     
     public boolean esMayorDeEdad() {
-        if (fechaNacimineto == null) return false;
-        LocalDate nacimiento = fechaNacimineto.toInstant()
+        if (fechaNacimiento == null) return false;
+        LocalDate nacimiento = fechaNacimiento.toInstant()
         .atZone(ZoneId.systemDefault())
         .toLocalDate();
 

@@ -1,0 +1,22 @@
+<Reserva>
+    <fechaReserva>2024-11-22</fechaReserva>
+    <descuento>10</descuento>
+
+    <cliente>
+        <id>C9</id>
+        <nick>iker23</nick>
+        <contrasenia>xxyyzz</contrasenia>
+        <edad>22</edad>
+        <fechaNacimiento>2002-02-14</fechaNacimiento>
+    </cliente>
+
+    <local>
+        <nombre>Bar Prueba</nombre>
+        <direccion>
+            <localidad>Donostia</localidad>
+            <provincia>Gipuzkoa</provincia>
+            <calle>Mirakontxa</calle>
+            <numero>88</numero>
+        </direccion>
+    </local>
+</Reserva>
