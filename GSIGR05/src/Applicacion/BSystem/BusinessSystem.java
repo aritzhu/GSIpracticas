@@ -433,8 +433,6 @@ public class BusinessSystem implements LeisureOffice, XMLRepresentable {
             doc.getDocumentElement().normalize();
 
             Element root = doc.getDocumentElement();
-
-            // === EJERCICIO 5 === XML GLOBAL BUSINESS SYSTEM
             if(root.getTagName().equals("BusinessSystem")){
 
                 NodeList bares = root.getElementsByTagName("Bar");
@@ -488,7 +486,6 @@ public class BusinessSystem implements LeisureOffice, XMLRepresentable {
                 return true;
             }
 
-            // === EJERCICIO 3 === uno por fichero
             switch(root.getTagName()) {
 
                 case "Bar":
