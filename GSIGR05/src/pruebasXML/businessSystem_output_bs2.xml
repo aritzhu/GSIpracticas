@@ -1,0 +1,149 @@
+<BusinessSystem>
+   <Usuarios>
+<Cliente id="c1">
+   <Nick>pedro</Nick>
+   <Edad>25</Edad>
+   <FechaNacimiento>2000-01-01</FechaNacimiento>
+</Cliente>
+<Propietario id="p1">
+
+   <Nick>juanito</Nick>
+   <Edad>45</Edad>
+   <FechaNacimiento>1980-05-22</FechaNacimiento>
+
+   <Locales>
+   </Locales>
+   <Contestaciones>
+   </Contestaciones>
+</Propietario>
+<Propietario id="p2">
+
+   <Nick>maria</Nick>
+   <Edad>38</Edad>
+   <FechaNacimiento>1987-11-10</FechaNacimiento>
+
+   <Locales>
+   </Locales>
+   <Contestaciones>
+   </Contestaciones>
+</Propietario>
+   </Usuarios>
+   <Reviews>
+   </Reviews>
+   <Contestaciones>
+   </Contestaciones>
+   <Locales>
+<Bar>
+
+   <Nombre>Bar Central</Nombre>
+<Direccion>
+   <Calle>Mayor</Calle>
+   <Numero>12</Numero>
+   <Localidad>Pamplona</Localidad>
+   <Provincia>Navarra</Provincia>
+</Direccion>
+   <Duenos>
+       <Propietario id="p1"/>
+   </Duenos>
+   <Reviews>
+<Review>
+   <Valoracion>5</Valoracion>
+   <Comentario>Excelente servicio y comida.</Comentario>
+   <FechaVisita>Sat Oct 12 00:00:00 CEST 2024</FechaVisita>
+   <FechaEscritura>Tue Oct 15 00:00:00 CEST 2024</FechaEscritura>
+   <Autor id="p1"/>
+</Review>
+<Review>
+   <Valoracion>4</Valoracion>
+   <Comentario>Buena atención, aunque algo caro.</Comentario>
+   <FechaVisita>Sun Oct 20 00:00:00 CEST 2024</FechaVisita>
+   <FechaEscritura>Mon Oct 21 00:00:00 CEST 2024</FechaEscritura>
+   <Autor id="p2"/>
+</Review>
+   </Reviews>
+
+   <PrecioMenu>15.5</PrecioMenu>
+   <Especialidades>
+       <Especialidad>TAPAS</Especialidad>
+       <Especialidad>VINOS</Especialidad>
+   </Especialidades>
+</Bar>
+<Pub>
+
+   <Nombre>Pub Central</Nombre>
+<Direccion>
+   <Calle>Licenciado Poza</Calle>
+   <Numero>47</Numero>
+   <Localidad>Bilbao</Localidad>
+   <Provincia>Bizkaia</Provincia>
+</Direccion>
+   <Duenos>
+       <Propietario id="p1"/>
+   </Duenos>
+   <Reviews>
+   </Reviews>
+
+   <HoraApertura>18</HoraApertura>
+   <HoraCierre>3</HoraCierre>
+</Pub>
+   </Locales>
+   <Bares>
+<Bar>
+
+   <Nombre>Bar Central</Nombre>
+<Direccion>
+   <Calle>Mayor</Calle>
+   <Numero>12</Numero>
+   <Localidad>Pamplona</Localidad>
+   <Provincia>Navarra</Provincia>
+</Direccion>
+   <Duenos>
+       <Propietario id="p1"/>
+   </Duenos>
+   <Reviews>
+<Review>
+   <Valoracion>5</Valoracion>
+   <Comentario>Excelente servicio y comida.</Comentario>
+   <FechaVisita>Sat Oct 12 00:00:00 CEST 2024</FechaVisita>
+   <FechaEscritura>Tue Oct 15 00:00:00 CEST 2024</FechaEscritura>
+   <Autor id="p1"/>
+</Review>
+<Review>
+   <Valoracion>4</Valoracion>
+   <Comentario>Buena atención, aunque algo caro.</Comentario>
+   <FechaVisita>Sun Oct 20 00:00:00 CEST 2024</FechaVisita>
+   <FechaEscritura>Mon Oct 21 00:00:00 CEST 2024</FechaEscritura>
+   <Autor id="p2"/>
+</Review>
+   </Reviews>
+
+   <PrecioMenu>15.5</PrecioMenu>
+   <Especialidades>
+       <Especialidad>TAPAS</Especialidad>
+       <Especialidad>VINOS</Especialidad>
+   </Especialidades>
+</Bar>
+   </Bares>
+   <Restaurantes>
+   </Restaurantes>
+   <Pubs>
+<Pub>
+
+   <Nombre>Pub Central</Nombre>
+<Direccion>
+   <Calle>Licenciado Poza</Calle>
+   <Numero>47</Numero>
+   <Localidad>Bilbao</Localidad>
+   <Provincia>Bizkaia</Provincia>
+</Direccion>
+   <Duenos>
+       <Propietario id="p1"/>
+   </Duenos>
+   <Reviews>
+   </Reviews>
+
+   <HoraApertura>18</HoraApertura>
+   <HoraCierre>3</HoraCierre>
+</Pub>
+   </Pubs>
+</BusinessSystem>

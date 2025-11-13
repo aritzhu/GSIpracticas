@@ -25,7 +25,7 @@ public class Local implements XMLRepresentable{
     private String nombre; 
     private Direccion direccion; 
     private List<Propietario> dueños; // maximo 3 minimo 1
-    private List<Review> reviews;
+    public List<Review> reviews;
 
     public String getNombre() {
         return nombre;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <BusinessSystem>
     
-    <propietarios>
+    <Propietarios>
         <propietario>
             <id>p1</id>
             <nick>juanito</nick>
@@ -16,9 +16,9 @@
             <edad>38</edad>
             <fechaNacimiento>1987-11-10</fechaNacimiento>
         </propietario>
-    </propietarios>
+    </Propietarios>
 
-    <clientes>
+    <Clientes>
         <cliente>
             <id>c1</id>
             <nick>pedro</nick>
@@ -26,11 +26,11 @@
             <edad>25</edad>
             <fechaNacimiento>2000-01-01</fechaNacimiento>
         </cliente>
-    </clientes>
+    </Clientes>
 
-    <locales>
+    <Locales>
 
-        <bar>
+        <Bar>
             <nombre>Bar Central</nombre>
             <precioMenu>15.5</precioMenu>
 
@@ -51,9 +51,40 @@
                 <edad>45</edad>
                 <fechaNacimiento>1980-05-22</fechaNacimiento>
             </propietario>
-        </bar>
 
-        <pub>
+            <reviews>
+                <review>
+                    <valoracion>5</valoracion>
+                    <comentario>Excelente servicio y comida.</comentario>
+                    <fechaVisita>2024-10-12</fechaVisita>
+                    <fechaEscritura>2024-10-15</fechaEscritura>
+                    <autor>
+                        <id>p1</id>
+                        <nick>juanito</nick>
+                        <contrasenia>1234</contrasenia>
+                        <edad>45</edad>
+                        <fechaNacimiento>1980-05-22</fechaNacimiento>
+                    </autor>
+                </review>
+
+                <review>
+                    <valoracion>4</valoracion>
+                    <comentario>Buena atención, aunque algo caro.</comentario>
+                    <fechaVisita>2024-10-20</fechaVisita>
+                    <fechaEscritura>2024-10-21</fechaEscritura>
+                    <autor>
+                        <id>p2</id>
+                        <nick>maria</nick>
+                        <contrasenia>abcd</contrasenia>
+                        <edad>38</edad>
+                        <fechaNacimiento>1987-11-10</fechaNacimiento>
+                    </autor>
+                </review>
+            </reviews>
+
+        </Bar>
+
+        <Pub>
             <nombre>Pub Central</nombre>
             <direccion>
                 <localidad>Bilbao</localidad>
@@ -71,17 +102,17 @@
                 <edad>45</edad>
                 <fechaNacimiento>1980-05-22</fechaNacimiento>
             </propietario>
-        </pub>
+        </Pub>
 
-    </locales>
+    </Locales>
 
-    <reservas>
-        <reserva>
+    <Reservas>
+        <Reserva>
             <fechaReserva>2025-05-22</fechaReserva>
             <descuento>10</descuento>
             <clienteRef>c1</clienteRef>
             <localRef>Bar Central</localRef>
-        </reserva>
-    </reservas>
+        </Reserva>
+    </Reservas>
 
 </BusinessSystem>

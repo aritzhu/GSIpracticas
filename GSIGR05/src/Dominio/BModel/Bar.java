@@ -86,4 +86,11 @@ public class Bar extends Local implements Reservable, XMLRepresentable {
     public boolean saveToXML(String filePath) {
         return saveToXML(new File(filePath));
     }
+
+   public void addReview(Review rv) {
+        // Asegurarse de que la review no sea nula antes de agregarla
+        if (rv != null) {
+            this.getReviews().add(rv);
+        }
+    }
 }
