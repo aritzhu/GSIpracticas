@@ -32,6 +32,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import GSILabs.persistence.XMLParsingException;
+import java.rmi.RemoteException;
 import org.w3c.dom.NodeList;
 
 /**
@@ -59,6 +60,10 @@ public class BusinessSystem implements LeisureOffice, XMLRepresentable {
         }
         database.getUsuarios().add(u);
         return true;
+    }
+    
+    public EjecuctionTimeDataBase getDatabase() {
+        return database;
     }
 
     @Override
