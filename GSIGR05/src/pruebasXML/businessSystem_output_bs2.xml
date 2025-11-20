@@ -1,10 +1,13 @@
 <BusinessSystem>
    <Usuarios>
+        <Clientes>
 <Cliente id="c1">
    <Nick>pedro</Nick>
    <Edad>25</Edad>
    <FechaNacimiento>2000-01-01</FechaNacimiento>
 </Cliente>
+        </Clientes>
+        <Propietarios>
 <Propietario id="p1">
 
    <Nick>juanito</Nick>
@@ -27,12 +30,10 @@
    <Contestaciones>
    </Contestaciones>
 </Propietario>
+        </Propietarios>
    </Usuarios>
-   <Reviews>
-   </Reviews>
-   <Contestaciones>
-   </Contestaciones>
    <Locales>
+        <Reservables>
 <Bar>
 
    <Nombre>Bar Central</Nombre>
@@ -42,23 +43,16 @@
    <Localidad>Pamplona</Localidad>
    <Provincia>Navarra</Provincia>
 </Direccion>
-   <Duenos>
+   <Propietarios>
        <Propietario id="p1"/>
-   </Duenos>
+   </Propietarios>
    <Reviews>
 <Review>
    <Valoracion>5</Valoracion>
    <Comentario>Excelente servicio y comida.</Comentario>
    <FechaVisita>Sat Oct 12 00:00:00 CEST 2024</FechaVisita>
    <FechaEscritura>Tue Oct 15 00:00:00 CEST 2024</FechaEscritura>
-   <Autor id="p1"/>
-</Review>
-<Review>
-   <Valoracion>4</Valoracion>
-   <Comentario>Buena atención, aunque algo caro.</Comentario>
-   <FechaVisita>Sun Oct 20 00:00:00 CEST 2024</FechaVisita>
-   <FechaEscritura>Mon Oct 21 00:00:00 CEST 2024</FechaEscritura>
-   <Autor id="p2"/>
+   <Autor id="c1"/>
 </Review>
    </Reviews>
 
@@ -68,6 +62,26 @@
        <Especialidad>VINOS</Especialidad>
    </Especialidades>
 </Bar>
+<Restaurante>
+
+   <Nombre>Asador Etxea</Nombre>
+<Direccion>
+   <Calle>Cercas Bajas</Calle>
+   <Numero>12</Numero>
+   <Localidad>Vitoria</Localidad>
+   <Provincia>Araba</Provincia>
+</Direccion>
+   <Propietarios>
+       <Propietario id="P2"/>
+   </Propietarios>
+   <Reviews>
+   </Reviews>
+
+   <PrecioMenu>28.5</PrecioMenu>
+   <CapacidadComensales>150</CapacidadComensales>
+   <CapacidadComensalesMesa>6</CapacidadComensalesMesa>
+</Restaurante>
+        </Reservables>
 <Pub>
 
    <Nombre>Pub Central</Nombre>
@@ -77,9 +91,9 @@
    <Localidad>Bilbao</Localidad>
    <Provincia>Bizkaia</Provincia>
 </Direccion>
-   <Duenos>
+   <Propietarios>
        <Propietario id="p1"/>
-   </Duenos>
+   </Propietarios>
    <Reviews>
    </Reviews>
 
@@ -87,63 +101,4 @@
    <HoraCierre>3</HoraCierre>
 </Pub>
    </Locales>
-   <Bares>
-<Bar>
-
-   <Nombre>Bar Central</Nombre>
-<Direccion>
-   <Calle>Mayor</Calle>
-   <Numero>12</Numero>
-   <Localidad>Pamplona</Localidad>
-   <Provincia>Navarra</Provincia>
-</Direccion>
-   <Duenos>
-       <Propietario id="p1"/>
-   </Duenos>
-   <Reviews>
-<Review>
-   <Valoracion>5</Valoracion>
-   <Comentario>Excelente servicio y comida.</Comentario>
-   <FechaVisita>Sat Oct 12 00:00:00 CEST 2024</FechaVisita>
-   <FechaEscritura>Tue Oct 15 00:00:00 CEST 2024</FechaEscritura>
-   <Autor id="p1"/>
-</Review>
-<Review>
-   <Valoracion>4</Valoracion>
-   <Comentario>Buena atención, aunque algo caro.</Comentario>
-   <FechaVisita>Sun Oct 20 00:00:00 CEST 2024</FechaVisita>
-   <FechaEscritura>Mon Oct 21 00:00:00 CEST 2024</FechaEscritura>
-   <Autor id="p2"/>
-</Review>
-   </Reviews>
-
-   <PrecioMenu>15.5</PrecioMenu>
-   <Especialidades>
-       <Especialidad>TAPAS</Especialidad>
-       <Especialidad>VINOS</Especialidad>
-   </Especialidades>
-</Bar>
-   </Bares>
-   <Restaurantes>
-   </Restaurantes>
-   <Pubs>
-<Pub>
-
-   <Nombre>Pub Central</Nombre>
-<Direccion>
-   <Calle>Licenciado Poza</Calle>
-   <Numero>47</Numero>
-   <Localidad>Bilbao</Localidad>
-   <Provincia>Bizkaia</Provincia>
-</Direccion>
-   <Duenos>
-       <Propietario id="p1"/>
-   </Duenos>
-   <Reviews>
-   </Reviews>
-
-   <HoraApertura>18</HoraApertura>
-   <HoraCierre>3</HoraCierre>
-</Pub>
-   </Pubs>
 </BusinessSystem>

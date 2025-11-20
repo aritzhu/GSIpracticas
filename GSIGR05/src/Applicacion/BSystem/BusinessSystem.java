@@ -353,46 +353,34 @@ public class BusinessSystem implements LeisureOffice, XMLRepresentable {
         xml.append("<BusinessSystem>\n");
 
         xml.append("   <Usuarios>\n");
+        xml.append("        <Clientes>\n");
         for (Usuario usuario : database.getUsuarios()) {
-            xml.append(usuario.toXML());
+            if (usuario.esCliente())
+                xml.append(usuario.toXML());
         }
+        xml.append("        </Clientes>\n");
+        xml.append("        <Propietarios>\n");
+        for (Usuario usuario : database.getUsuarios()) {
+            if (!usuario.esCliente())
+                xml.append(usuario.toXML());
+        }
+        xml.append("        </Propietarios>\n");
         xml.append("   </Usuarios>\n");
 
-        xml.append("   <Reviews>\n");
-        for (Review review : database.getReviews()) {
-            xml.append(review.toXML());
-        }
-        xml.append("   </Reviews>\n");
-
-        xml.append("   <Contestaciones>\n");
-        for (Contestacion contestacion : database.getContestaciones()) {
-            xml.append(contestacion.toXML());
-        }
-        xml.append("   </Contestaciones>\n");
 
         xml.append("   <Locales>\n");
+        xml.append("        <Reservables>\n");
         for (Local local : database.getLocales()) {
-            xml.append(local.toXML());
+            if (local.esReservable())
+                xml.append(local.toXML());
+        }
+        xml.append("        </Reservables>\n");
+        for (Local local : database.getLocales()) {
+            if (!local.esReservable())
+                xml.append(local.toXML());
         }
         xml.append("   </Locales>\n");
 
-        xml.append("   <Bares>\n");
-        for (Bar bar : database.getLocales().stream().filter(l -> l instanceof Bar).map(l -> (Bar) l).toArray(Bar[]::new)) {
-            xml.append(bar.toXML());
-        }
-        xml.append("   </Bares>\n");
-
-        xml.append("   <Restaurantes>\n");
-        for (Restaurante restaurante : database.getLocales().stream().filter(l -> l instanceof Restaurante).map(l -> (Restaurante) l).toArray(Restaurante[]::new)) {
-            xml.append(restaurante.toXML());
-        }
-        xml.append("   </Restaurantes>\n");
-        
-        xml.append("   <Pubs>\n");
-        for (Pub pub : database.getLocales().stream().filter(l -> l instanceof Pub).map(l -> (Pub) l).toArray(Pub[]::new)) {
-            xml.append(pub.toXML());
-        }
-        xml.append("   </Pubs>\n");
 
         xml.append("</BusinessSystem>\n");
         return xml.toString();

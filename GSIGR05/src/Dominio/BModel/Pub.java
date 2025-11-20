@@ -10,6 +10,8 @@ import java.util.List;
 public class Pub extends Local implements Reservable, XMLRepresentable {
     private int horaApertura;  // hora en formato 24h
     private int horaCierre;    // hora en formato 24h
+    
+    private final boolean esReservable= false;
 
     // Constructor
     public Pub(String nombre, Direccion direccion, List<Propietario> dueños, int horaApertura, int horaCierre) {
@@ -20,6 +22,9 @@ public class Pub extends Local implements Reservable, XMLRepresentable {
     // Constructor
     public Pub(String nombre, Direccion direccion, List<Propietario> dueños) {
         super(nombre, direccion, dueños);
+    }
+    public boolean esReservable(){
+        return esReservable;
     }
 
     // Getters y setters

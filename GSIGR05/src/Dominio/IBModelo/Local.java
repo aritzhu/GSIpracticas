@@ -26,9 +26,13 @@ public class Local implements XMLRepresentable{
     private Direccion direccion; 
     private List<Propietario> dueños; // maximo 3 minimo 1
     public List<Review> reviews;
+    public boolean esReservable;
 
     public String getNombre() {
         return nombre;
+    }
+    public boolean esReservable(){
+        return esReservable;
     }
 
     public Direccion getDireccion() {
@@ -98,13 +102,13 @@ public class Local implements XMLRepresentable{
             xml.append(direccion.toXML()); // asumiendo que Direccion tiene toXML()
 
         // Dueños
-        xml.append("   <Duenos>\n");
+        xml.append("   <Propietarios>\n");
         if (dueños != null) {
             for (Propietario p : dueños) {
                 xml.append("       <Propietario id=\"").append(p.getID()).append("\"/>\n");
             }
         }
-        xml.append("   </Duenos>\n");
+        xml.append("   </Propietarios>\n");
 
         // Reviews
         xml.append("   <Reviews>\n");

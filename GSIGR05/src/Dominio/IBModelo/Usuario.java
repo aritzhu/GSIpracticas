@@ -24,6 +24,7 @@ public class Usuario implements XMLRepresentable{
     private String contrasenia;
     private int edad; // > 14
     private Date fechaNacimiento;
+    private boolean esCliente;
   
     public Usuario(String ID, String nick, String contrasenia, int edad, Date fechaNacimineto) {
         this.ID = ID;
@@ -31,6 +32,9 @@ public class Usuario implements XMLRepresentable{
         this.contrasenia = contrasenia;
         this.edad = edad;
         this.fechaNacimiento = fechaNacimineto;
+    }
+    public boolean esCliente(){
+        return esCliente;
     }
     public String getID() {
         return ID;

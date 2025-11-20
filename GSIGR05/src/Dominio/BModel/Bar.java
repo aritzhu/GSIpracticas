@@ -18,6 +18,7 @@ import java.util.List;
  */
 public class Bar extends Local implements Reservable, XMLRepresentable {
     private float precioMenu;
+    private final boolean esReservable= true;
     private List<EnumEspecialidadesBar> especialidades;
 
     public Bar(String nombre, Direccion dirección, List<Propietario> dueños) {
@@ -28,7 +29,9 @@ public class Bar extends Local implements Reservable, XMLRepresentable {
         this.precioMenu = precioMenu;
         this.especialidades = especialidades;
     }
-
+    public boolean esReservable(){
+        return esReservable;
+    }
     // Getters y setters
     public float getPrecioMenu() {
         return precioMenu;

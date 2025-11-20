@@ -18,6 +18,7 @@ public class Restaurante extends Local implements Reservable, XMLRepresentable{
     private float precioMenu;
     private int capacidadComensales;
     private int capacidadComensalesMesa;
+    private final boolean esReservable= true;
 
     public Restaurante(String nombre, Direccion dirección, List<Propietario> dueños) {
         super(nombre, dirección, dueños);
@@ -28,7 +29,9 @@ public class Restaurante extends Local implements Reservable, XMLRepresentable{
         this.capacidadComensales = capacidadComensales;
         this.capacidadComensalesMesa = capacidadComensalesMesa;
     }
-
+   public boolean esReservable(){
+        return esReservable;
+    }
     public float getPrecioMenu() {
         return precioMenu;
     }

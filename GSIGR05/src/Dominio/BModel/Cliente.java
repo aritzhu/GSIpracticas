@@ -16,10 +16,14 @@ import java.util.List;
 
 public class Cliente extends Usuario implements XMLRepresentable{ 
     private List<Review> reviews;
+    private final boolean esCliente = true;
 
     public Cliente(List<Review> reviews, String ID, String nick, String contrasenia, int edad, Date fechaNacimineto) {
         super(ID, nick, contrasenia, edad, fechaNacimineto);
         this.reviews = reviews;
+    }
+    public boolean esCliente(){
+        return esCliente;
     }
     
     @Override
