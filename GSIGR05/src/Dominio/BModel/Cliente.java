@@ -9,42 +9,38 @@ import GSILabs.Serializable.XMLRepresentable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 
 public class Cliente extends Usuario implements XMLRepresentable{ 
     private List<Review> reviews;
+    private final boolean esCliente = true;
 
     public Cliente(List<Review> reviews, String ID, String nick, String contrasenia, int edad, Date fechaNacimineto) {
         super(ID, nick, contrasenia, edad, fechaNacimineto);
         this.reviews = reviews;
+    }
+    public boolean esCliente(){
+        return esCliente;
     }
     
     @Override
     public String toXML() {
         StringBuilder xml = new StringBuilder();
 
-        // Usamos super.toXML() pero quitamos etiquetas de <Usuario>
-        String usuarioXML = super.toXML();
-        usuarioXML = usuarioXML.replaceFirst("<Usuario>", "").replaceFirst("</Usuario>$", "");
-
+        // Generamos XML para el Usuario (heredado)
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         xml.append("<Cliente id=\"").append(getID()).append("\">\n");
-        xml.append(usuarioXML);
-
-        xml.append("   <Reviews>\n");
-        for (Review r : reviews) {
-            xml.append("       <Review>\n");
-            xml.append("           <Valoracion>").append(r.getValoracion()).append("</Valoracion>\n");
-            xml.append("           <Comentario>").append(r.getComentario()).append("</Comentario>\n");
-            xml.append("           <FechaVisita>").append(r.getFechaVisita()).append("</FechaVisita>\n");
-            xml.append("           <FechaEscritura>").append(r.getFechaEscritura()).append("</FechaEscritura>\n");
-            xml.append("           <Autor id=\"").append(r.getAutor().getID()).append("\"/>\n");
-            xml.append("       </Review>\n");
+        xml.append("   <Nick>").append(getNick()).append("</Nick>\n");
+        xml.append("   <Edad>").append(getEdad()).append("</Edad>\n");
+        if (getFechaNacimiento() != null) {
+            xml.append("   <FechaNacimiento>").append(sdf.format(getFechaNacimiento())).append("</FechaNacimiento>\n");
         }
-        xml.append("   </Reviews>\n");
 
         xml.append("</Cliente>\n");
+
         return xml.toString();
     }
 
@@ -54,6 +50,7 @@ public class Cliente extends Usuario implements XMLRepresentable{
             fw.write(this.toXML());
             return true;
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }

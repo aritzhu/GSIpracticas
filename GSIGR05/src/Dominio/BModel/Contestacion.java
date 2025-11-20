@@ -34,7 +34,7 @@ public class Contestacion implements XMLRepresentable{
     public String toXML() {
         StringBuilder xml = new StringBuilder();
         xml.append("<Contestacion>\n");
-        xml.append("   <Dueno id=\"").append(dueño.getID()).append("\"/>\n");
+        xml.append("   <Propietario id=\"").append(dueño.getID()).append("\"/>\n");
         xml.append("   <Review>\n");
         xml.append("       <Valoracion>").append(review.getValoracion()).append("</Valoracion>\n");
         xml.append("       <Comentario>").append(review.getComentario()).append("</Comentario>\n");

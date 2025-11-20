@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <BusinessSystem>
     
-    <propietarios>
+    <Propietarios>
         <propietario>
             <id>p1</id>
             <nick>juanito</nick>
@@ -16,9 +16,9 @@
             <edad>38</edad>
             <fechaNacimiento>1987-11-10</fechaNacimiento>
         </propietario>
-    </propietarios>
+    </Propietarios>
 
-    <clientes>
+    <Clientes>
         <cliente>
             <id>c1</id>
             <nick>pedro</nick>
@@ -26,11 +26,11 @@
             <edad>25</edad>
             <fechaNacimiento>2000-01-01</fechaNacimiento>
         </cliente>
-    </clientes>
+    </Clientes>
 
-    <locales>
+    <Locales>
 
-        <bar>
+        <Bar>
             <nombre>Bar Central</nombre>
             <precioMenu>15.5</precioMenu>
 
@@ -51,9 +51,25 @@
                 <edad>45</edad>
                 <fechaNacimiento>1980-05-22</fechaNacimiento>
             </propietario>
-        </bar>
 
-        <pub>
+            <reviews>
+                <review>
+                    <valoracion>5</valoracion>
+                    <comentario>Excelente servicio y comida.</comentario>
+                    <fechaVisita>2024-10-12</fechaVisita>
+                    <fechaEscritura>2024-10-15</fechaEscritura>
+                    <autor>
+                        <id>c1</id>
+                        <nick>juanito</nick>
+                        <contrasenia>1234</contrasenia>
+                        <edad>45</edad>
+                        <fechaNacimiento>1980-05-22</fechaNacimiento>
+                    </autor>
+                </review>
+            </reviews>
+
+        </Bar>
+        <Pub>
             <nombre>Pub Central</nombre>
             <direccion>
                 <localidad>Bilbao</localidad>
@@ -71,17 +87,38 @@
                 <edad>45</edad>
                 <fechaNacimiento>1980-05-22</fechaNacimiento>
             </propietario>
-        </pub>
+        </Pub>
+        <Restaurante>
+            <nombre>Asador Etxea</nombre>
+            <direccion>
+                <localidad>Vitoria</localidad>
+                <provincia>Araba</provincia>
+                <calle>Cercas Bajas</calle>
+                <numero>12</numero>
+            </direccion>
+            <precioMenu>28.50</precioMenu>
+            <capacidadComensales>150</capacidadComensales>
+            <capacidadComensalesMesa>6</capacidadComensalesMesa>
 
-    </locales>
+            <propietario>
+                <id>P2</id>
+                <nick>mikel</nick>
+                <contrasenia>pass987</contrasenia>
+                <edad>43</edad>
+                <fechaNacimiento>1982-07-20</fechaNacimiento>
+            </propietario>
+        </Restaurante>
+        
 
-    <reservas>
-        <reserva>
+    </Locales>
+
+    <Reservas>
+        <Reserva>
             <fechaReserva>2025-05-22</fechaReserva>
             <descuento>10</descuento>
             <clienteRef>c1</clienteRef>
             <localRef>Bar Central</localRef>
-        </reserva>
-    </reservas>
+        </Reserva>
+    </Reservas>
 
 </BusinessSystem>
