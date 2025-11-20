@@ -18,11 +18,16 @@ import java.util.List;
  */
 public class Propietario extends Usuario implements XMLRepresentable{
     private List<Local> locales;
+    
+    private final boolean esCliente = false;
     private List<Contestacion> contestaciones;
     public Propietario(List<Review> reviews, String ID, String nick, String contrasenia, int edad, Date fechaNacimineto) {
         super(ID, nick, contrasenia, edad, fechaNacimineto);
         this.locales = locales;
         this.contestaciones = contestaciones;
+    }
+    public boolean esCliente(){
+        return esCliente;
     }
     
      @Override

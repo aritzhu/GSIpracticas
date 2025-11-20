@@ -24,6 +24,7 @@ public class Usuario implements XMLRepresentable{
     private String contrasenia;
     private int edad; // > 14
     private Date fechaNacimiento;
+    private boolean esCliente;
   
     public Usuario(String ID, String nick, String contrasenia, int edad, Date fechaNacimineto) {
         this.ID = ID;
@@ -31,6 +32,9 @@ public class Usuario implements XMLRepresentable{
         this.contrasenia = contrasenia;
         this.edad = edad;
         this.fechaNacimiento = fechaNacimineto;
+    }
+    public boolean esCliente(){
+        return esCliente;
     }
     public String getID() {
         return ID;
@@ -86,7 +90,7 @@ public class Usuario implements XMLRepresentable{
         return anos_usuario >= 14;
     }
     
-    @Override
+     @Override
     public String toXML() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 

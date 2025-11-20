@@ -1,0 +1,104 @@
+<BusinessSystem>
+   <Usuarios>
+        <Clientes>
+<Cliente id="c1">
+   <Nick>pedro</Nick>
+   <Edad>25</Edad>
+   <FechaNacimiento>2000-01-01</FechaNacimiento>
+</Cliente>
+        </Clientes>
+        <Propietarios>
+<Propietario id="p1">
+
+   <Nick>juanito</Nick>
+   <Edad>45</Edad>
+   <FechaNacimiento>1980-05-22</FechaNacimiento>
+
+   <Locales>
+   </Locales>
+   <Contestaciones>
+   </Contestaciones>
+</Propietario>
+<Propietario id="p2">
+
+   <Nick>maria</Nick>
+   <Edad>38</Edad>
+   <FechaNacimiento>1987-11-10</FechaNacimiento>
+
+   <Locales>
+   </Locales>
+   <Contestaciones>
+   </Contestaciones>
+</Propietario>
+        </Propietarios>
+   </Usuarios>
+   <Locales>
+        <Reservables>
+<Bar>
+
+   <Nombre>Bar Central</Nombre>
+<Direccion>
+   <Calle>Mayor</Calle>
+   <Numero>12</Numero>
+   <Localidad>Pamplona</Localidad>
+   <Provincia>Navarra</Provincia>
+</Direccion>
+   <Propietarios>
+       <Propietario id="p1"/>
+   </Propietarios>
+   <Reviews>
+<Review>
+   <Valoracion>5</Valoracion>
+   <Comentario>Excelente servicio y comida.</Comentario>
+   <FechaVisita>Sat Oct 12 00:00:00 CEST 2024</FechaVisita>
+   <FechaEscritura>Tue Oct 15 00:00:00 CEST 2024</FechaEscritura>
+   <Autor id="c1"/>
+</Review>
+   </Reviews>
+
+   <PrecioMenu>15.5</PrecioMenu>
+   <Especialidades>
+       <Especialidad>TAPAS</Especialidad>
+       <Especialidad>VINOS</Especialidad>
+   </Especialidades>
+</Bar>
+<Restaurante>
+
+   <Nombre>Asador Etxea</Nombre>
+<Direccion>
+   <Calle>Cercas Bajas</Calle>
+   <Numero>12</Numero>
+   <Localidad>Vitoria</Localidad>
+   <Provincia>Araba</Provincia>
+</Direccion>
+   <Propietarios>
+       <Propietario id="P2"/>
+   </Propietarios>
+   <Reviews>
+   </Reviews>
+
+   <PrecioMenu>28.5</PrecioMenu>
+   <CapacidadComensales>150</CapacidadComensales>
+   <CapacidadComensalesMesa>6</CapacidadComensalesMesa>
+</Restaurante>
+        </Reservables>
+<Pub>
+
+   <Nombre>Pub Central</Nombre>
+<Direccion>
+   <Calle>Licenciado Poza</Calle>
+   <Numero>47</Numero>
+   <Localidad>Bilbao</Localidad>
+   <Provincia>Bizkaia</Provincia>
+</Direccion>
+   <Propietarios>
+       <Propietario id="p1"/>
+   </Propietarios>
+   <Reviews>
+   </Reviews>
+
+   <HoraApertura>18</HoraApertura>
+   <HoraCierre>3</HoraCierre>
+</Pub>
+   </Locales>
+</BusinessSystem>
