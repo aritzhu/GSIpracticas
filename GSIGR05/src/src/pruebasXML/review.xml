@@ -1,0 +1,13 @@
+<Review>
+    <Valoracion>5</Valoracion>
+    <Comentario>Excelente servicio y comida.</Comentario>
+    <FechaVisita>2024-10-12</FechaVisita>
+    <FechaEscritura>2024-10-15</FechaEscritura>
+    <Cliente>
+        <Id>p001</Id>
+        <Nick>cliente123</Nick>
+        <Contrasenia>abc123</Contrasenia>
+        <Edad>45</Edad>
+        <FechaNacimiento>1979-03-10</FechaNacimiento>
+    </Cliente>
+</Review>
