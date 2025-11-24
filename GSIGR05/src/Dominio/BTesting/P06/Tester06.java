@@ -38,7 +38,7 @@ public class Tester06 {
             Date fechaNacimiento = sdf.parse("15/11/1990");
             
             
-            Propietario dueno1 = new Propietario(reviews, "001", "Mario", "1234pass", 34, fechaNacimiento);
+            Propietario dueno1 = new Propietario("001", "Mario", "1234pass", 34, fechaNacimiento);
             
             Direccion direccion = new Direccion("Pamplona", "Navarra", "Calle Mayor", 10);
             List<Propietario> duenosIniciales = new ArrayList<>();

@@ -32,7 +32,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import GSILabs.persistence.XMLParsingException;
-import java.rmi.RemoteException;
+import java.util.HashSet;
+import java.util.Set;
 import org.w3c.dom.NodeList;
 
 /**
@@ -60,10 +61,6 @@ public class BusinessSystem implements LeisureOffice, XMLRepresentable {
         }
         database.getUsuarios().add(u);
         return true;
-    }
-    
-    public EjecuctionTimeDataBase getDatabase() {
-        return database;
     }
 
     @Override
@@ -353,43 +350,72 @@ public class BusinessSystem implements LeisureOffice, XMLRepresentable {
     }
     
     @Override
-    public String toXML() {
-        StringBuilder xml = new StringBuilder();
-        xml.append("<BusinessSystem>\n");
+public String toXML() {
+    StringBuilder xml = new StringBuilder();
+    xml.append("<BusinessSystem>\n");
 
-        xml.append("   <Usuarios>\n");
-        xml.append("        <Clientes>\n");
-        for (Usuario usuario : database.getUsuarios()) {
-            if (usuario.esCliente())
-                xml.append(usuario.toXML());
+    // Usuarios
+    xml.append("   <Usuarios>\n");
+
+    // Clientes
+    xml.append("        <Clientes>\n");
+    for (Usuario usuario : database.getUsuarios()) {
+        if (usuario.esCliente()) {
+            xml.append(indentLines(usuario.toXML(), 3));
         }
-        xml.append("        </Clientes>\n");
-        xml.append("        <Propietarios>\n");
-        for (Usuario usuario : database.getUsuarios()) {
-            if (!usuario.esCliente())
-                xml.append(usuario.toXML());
-        }
-        xml.append("        </Propietarios>\n");
-        xml.append("   </Usuarios>\n");
-
-
-        xml.append("   <Locales>\n");
-        xml.append("        <Reservables>\n");
-        for (Local local : database.getLocales()) {
-            if (local.esReservable())
-                xml.append(local.toXML());
-        }
-        xml.append("        </Reservables>\n");
-        for (Local local : database.getLocales()) {
-            if (!local.esReservable())
-                xml.append(local.toXML());
-        }
-        xml.append("   </Locales>\n");
-
-
-        xml.append("</BusinessSystem>\n");
-        return xml.toString();
     }
+    xml.append("        </Clientes>\n");
+
+    // Propietarios
+    xml.append("        <Propietarios>\n");
+    for (Usuario usuario : database.getUsuarios()) {
+        if (!usuario.esCliente()) {
+            xml.append(indentLines(usuario.toXML(), 3));
+        }
+    }
+    xml.append("        </Propietarios>\n");
+
+    xml.append("   </Usuarios>\n");
+
+    // Locales
+    xml.append("   <Locales>\n");
+
+    // Reservables
+    xml.append("        <Reservables>\n");
+    for (Local local : database.getLocales()) {
+        if (local.esReservable()) {
+            xml.append(indentLines(local.toXML(), 3));
+        }
+    }
+    xml.append("        </Reservables>\n");
+
+    // No reservables
+    for (Local local : database.getLocales()) {
+        if (!local.esReservable()) {
+            xml.append(indentLines(local.toXML(), 2));
+        }
+    }
+
+    xml.append("   </Locales>\n");
+
+    xml.append("</BusinessSystem>\n");
+
+    // Mostrar por pantalla
+    System.out.println(xml);
+
+    return xml.toString();
+}
+
+private String indentLines(String text, int level) {
+    String indent = "   ".repeat(level); // 3 espacios por nivel
+    StringBuilder indented = new StringBuilder();
+    String[] lines = text.split("\n");
+    for (String line : lines) {
+        indented.append(indent).append(line).append("\n");
+    }
+    return indented.toString();
+}
+    
     @Override
     public boolean saveToXML(File f) {
         try (FileWriter fw = new FileWriter(f)) {
@@ -421,266 +447,158 @@ public class BusinessSystem implements LeisureOffice, XMLRepresentable {
     try {
         System.out.println("Cargando XML en Business System");
 
-        // Crear el parser XML
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(f);
         doc.getDocumentElement().normalize();
 
-        // Obtener la raíz
         Element root = doc.getDocumentElement();
-
-        // Verificar que la raíz sea BusinessSystem
-        if (root.getTagName().equals("BusinessSystem")) {
-
-            // Procesar los Locales
-            NodeList locales = root.getElementsByTagName("Locales");
-            if (locales.getLength() > 0) {
-                System.out.println("Más de un local detectado");
-
-                // Obtener el primer nodo <Locales>
-                Element localesElement = (Element) locales.item(0);
-
-                // Procesar los Bares
-                NodeList bares = localesElement.getElementsByTagName("Bar");
-                for (int i = 0; i < bares.getLength(); i++) {
-                    System.out.println("Cargando Bar");
-                    // Parsear cada bar
-                    Bar bar = XMLParser.parseBarBS((Element) bares.item(i));
-
-                    // Procesar reviews para el bar
-                    NodeList reviewNodes = ((Element) bares.item(i)).getElementsByTagName("reviews");
-                    for (int j = 0; j < reviewNodes.getLength(); j++) {
-                        NodeList reviewItems = ((Element) reviewNodes.item(j)).getElementsByTagName("review");
-                        for (int k = 0; k < reviewItems.getLength(); k++) {
-                            Review rv = XMLParser.parseReviewBS((Element) reviewItems.item(k));
-                            bar.addReview(rv);  // Añadir la review al bar
-                            
-                        }
-                    }
-
-                    // Añadir el local procesado
-                    this.nuevoLocal(bar);
-                    System.out.println("OBJETO BAR (modo files) CREADO DESDE XML");
-                            System.out.println("Nombre: " + bar.getNombre());
-                            System.out.println("Precio menú: " + bar.getPrecioMenu());
-                            System.out.println("Localidad: " + bar.getDireccion().getLocalidad());
-                            System.out.println("Provincia: " + bar.getDireccion().getProvincia());
-                            System.out.println("Calle: " + bar.getDireccion().getCalle());
-                            System.out.println("Número: " + bar.getDireccion().getNumero());
-                            System.out.println("Especialidades: " + bar.getEspecialidades());
-                            System.out.println("Dueños: " + bar.getDueños().size());
-                            System.out.println("Reviews: " + bar.getReviews().size());
-                            System.out.println("---------------------------------------");
-                }
-
-                // Procesar los Pubs
-                NodeList pubs = localesElement.getElementsByTagName("Pub");
-                for (int i = 0; i < pubs.getLength(); i++) {
-                    System.out.println("Cargando Pub");
-                    // Parsear cada pub
-                    Pub pub = XMLParser.parsePubBS((Element) pubs.item(i));
-
-                    // Procesar reviews para el pub
-                    NodeList reviewNodes = ((Element) pubs.item(i)).getElementsByTagName("reviews");
-                    for (int j = 0; j < reviewNodes.getLength(); j++) {
-                        NodeList reviewItems = ((Element) reviewNodes.item(j)).getElementsByTagName("review");
-                        for (int k = 0; k < reviewItems.getLength(); k++) {
-                            Review rv = XMLParser.parseReviewBS((Element) reviewItems.item(k));
-                            pub.addReview(rv);  // Añadir la review al pub
-                        }
-                    }
-                    
-                    // Añadir el local procesado
-                    this.nuevoLocal(pub);
-                    System.out.println("OBJETO PUB (modo files) CREADO DESDE XML");
-                    System.out.println("Nombre: " + pub.getNombre());
-                    System.out.println("Localidad: " + pub.getDireccion().getLocalidad());
-                    System.out.println("Provincia: " + pub.getDireccion().getProvincia());
-                    System.out.println("Calle: " + pub.getDireccion().getCalle());
-                    System.out.println("Número: " + pub.getDireccion().getNumero());
-                    System.out.println("Hora apertura: " + pub.getHoraApertura());
-                    System.out.println("Hora cierre: " + pub.getHoraCierre());
-                    System.out.println("Dueños: " + pub.getDueños().size());
-                    System.out.println("Reviews: " + pub.getReviews().size());
-                    System.out.println("---------------------------------------");
-                }
-
-                // Procesar otros locales si es necesario, como restaurantes
-                NodeList restaurantes = localesElement.getElementsByTagName("Restaurante");
-                for (int i = 0; i < restaurantes.getLength(); i++) {
-                    // Parsear cada restaurante
-                    Restaurante r = XMLParser.parseRestauranteBS((Element) restaurantes.item(i));
-
-                    // Procesar reviews para el restaurante
-                    NodeList reviewNodes = ((Element) restaurantes.item(i)).getElementsByTagName("reviews");
-                    for (int j = 0; j < reviewNodes.getLength(); j++) {
-                        NodeList reviewItems = ((Element) reviewNodes.item(j)).getElementsByTagName("review");
-                        for (int k = 0; k < reviewItems.getLength(); k++) {
-                            Review rv = XMLParser.parseReviewBS((Element) reviewItems.item(k));
-                            r.addReview(rv);  // Añadir la review al restaurante
-                        }
-                    }
-                    
-                    // Añadir el local procesado
-                    this.nuevoLocal(r);
-                    System.out.println("OBJETO RESTAURANTE (modo files) CREADO DESDE XML");
-                    System.out.println("Nombre: " + r.getNombre());
-                    System.out.println("Precio menú: " + r.getPrecioMenu());
-                    System.out.println("Capacidad comensales total: " + r.getCapacidadComensales());
-                    System.out.println("Capacidad comensales mesa: " + r.getCapacidadComensalesMesa());
-                    System.out.println("Localidad: " + r.getDireccion().getLocalidad());
-                    System.out.println("Provincia: " + r.getDireccion().getProvincia());
-                    System.out.println("Calle: " + r.getDireccion().getCalle());
-                    System.out.println("Número: " + r.getDireccion().getNumero());
-                    System.out.println("Dueños: " + r.getDueños().size());
-                    System.out.println("Reviews: " + r.getReviews().size());
-                    System.out.println("---------------------------------------");
-                }
-            } else {
-                System.out.println("Ningún local detectado");
-            }
-
-            // Procesar los Clientes
-            NodeList clientes = root.getElementsByTagName("Clientes");
-            for (int i = 0; i < clientes.getLength(); i++) {
-                NodeList clienteNodes = ((Element) clientes.item(i)).getElementsByTagName("cliente");
-                for (int j = 0; j < clienteNodes.getLength(); j++) {
-                    Cliente c = XMLParser.parseClienteBS((Element) clienteNodes.item(j));
-                    this.nuevoUsuario(c);
-                    System.out.println("OBJETO CLIENTE (modo files) CREADO DESDE XML");
-                    System.out.println("ID: " + c.getID());
-                    System.out.println("Nick: " + c.getNick());
-                    System.out.println("Contraseña: " + c.getContrasenia());
-                    System.out.println("Edad: " + c.getEdad());
-                    System.out.println("Fecha nacimiento: " + c.getFechaNacimiento());
-                    System.out.println("---------------------------------------");
-                }
-            }
-
-            // Procesar los Propietarios
-            NodeList propietarios = root.getElementsByTagName("Propietarios");
-            for (int i = 0; i < propietarios.getLength(); i++) {
-                NodeList propietarioNodes = ((Element) propietarios.item(i)).getElementsByTagName("propietario");
-                for (int j = 0; j < propietarioNodes.getLength(); j++) {
-                    Propietario pr = XMLParser.parsePropietarioBS((Element) propietarioNodes.item(j));
-                    this.nuevoUsuario(pr);
-                    System.out.println("OBJETO PROPIETARIO (modo file) CREADO DESDE XML");
-                    System.out.println("ID: " + pr.getID());
-                    System.out.println("Nick: " + pr.getNick());
-                    System.out.println("Contraseña: " + pr.getContrasenia());
-                    System.out.println("Edad: " + pr.getEdad());
-                    System.out.println("Fecha nacimiento: " + pr.getFechaNacimiento());
-                    System.out.println("Locales: " + (pr.getLocales() != null ? pr.getLocales().size() : 0));
-                    System.out.println("Contestaciones: " + (pr.getContestaciones() != null ? pr.getContestaciones().size() : 0));
-                    System.out.println("---------------------------------------");
-                }
-            }
-
-            // Procesar Contestaciones
-            NodeList contestaciones = root.getElementsByTagName("Contestaciones");
-            for (int i = 0; i < contestaciones.getLength(); i++) {
-                NodeList contestacionNodes = ((Element) contestaciones.item(i)).getElementsByTagName("contestacion");
-                for (int j = 0; j < contestacionNodes.getLength(); j++) {
-                    Contestacion co = XMLParser.parseContestacionBS((Element) contestacionNodes.item(j));
-                    this.database.getContestaciones().add(co);
-                    // Imprimir detalles de la contestación
-                    System.out.println("OBJETO CONTESTACION (modo files) CREADO DESDE XML");
-
-                    // Imprimir detalles del dueño
-                    System.out.println("ID Dueño: " + co.getDueño().getID());
-                    System.out.println("Nick Dueño: " + co.getDueño().getNick());
-                    System.out.println("Edad Dueño: " + co.getDueño().getEdad());
-                    System.out.println("Fecha Nacimiento Dueño: " + co.getDueño().getFechaNacimiento());
-
-                    // Imprimir detalles de la review asociada
-                    System.out.println("Valoracion Review: " + co.getReview().getValoracion());
-                    System.out.println("Comentario Review: " + co.getReview().getComentario());
-
-                    // Imprimir texto de la contestación
-                    System.out.println("Texto Contestación: " + co.getContestacion());
-
-                    // Imprimir fecha de escritura de la contestación
-                    System.out.println("Fecha Escritura Contestación: " + co.getFechaEscritura());
-
-                    System.out.println("---------------------------------------");
-                }
-            }
-
-            // Procesar Reservas
-            NodeList reservas = root.getElementsByTagName("Reservas");
-            for (int i = 0; i < reservas.getLength(); i++) {
-                NodeList reservaNodes = ((Element) reservas.item(i)).getElementsByTagName("reserva");
-                for (int j = 0; j < reservaNodes.getLength(); j++) {
-                    Reserva rs = XMLParser.parseReservaBS((Element) reservaNodes.item(j));
-                    this.database.getReservas().add(rs);
-                    // Imprimir detalles de la reserva
-                    System.out.println("OBJETO RESERVA (modo files) CREADO DESDE XML");
-
-                    // Imprimir fecha de reserva
-                    System.out.println("Fecha Reserva: " + rs.getFechaReserva());
-
-                    // Imprimir descuento
-                    System.out.println("Descuento: " + rs.getDescuento() + "%");
-
-                    // Imprimir detalles del cliente
-                    System.out.println("ID Cliente: " + rs.getCliente().getID());
-                    System.out.println("Nick Cliente: " + rs.getCliente().getNick());
-                    System.out.println("Edad Cliente: " + rs.getCliente().getEdad());
-                    System.out.println("Fecha Nacimiento Cliente: " + rs.getCliente().getFechaNacimiento());
-
-                    // Imprimir detalles del local
-                    System.out.println("Nombre Local: " + rs.getLocal().getNombre());
-                    System.out.println("Localidad Local: " + rs.getLocal().getDireccion().getLocalidad());
-                    System.out.println("Provincia Local: " + rs.getLocal().getDireccion().getProvincia());
-                    System.out.println("Calle Local: " + rs.getLocal().getDireccion().getCalle());
-                    System.out.println("Número Local: " + rs.getLocal().getDireccion().getNumero());
-
-                    System.out.println("---------------------------------------");
-                }
-            }
-
-            return true;
+        if (!root.getTagName().equals("BusinessSystem")) {
+            System.err.println("Raíz inválida: " + root.getTagName());
+            return false;
         }
 
-        // Código adicional para verificar otras secciones del XML si es necesario
-        switch (root.getTagName()) {
-            case "Bar":
-                return this.nuevoLocal(XMLParser.parseBar(f));
-
-            case "Pub":
-                System.out.println("Me meto por aquí");
-                return this.nuevoLocal(XMLParser.parsePub(f));
-
-            case "Restaurante":
-                return this.nuevoLocal(XMLParser.parseRestaurante(f));
-
-            case "Cliente":
-                return this.nuevoUsuario(XMLParser.parseCliente(f));
-
-            case "Propietario":
-                return this.nuevoUsuario(XMLParser.parsePropietario(f));
-
-            case "Review":
-                return this.nuevaReview(XMLParser.parseReview(f));
-
-            case "Contestacion":
-                this.database.getContestaciones().add(XMLParser.parseContestacion(f));
-                return true;
-
-            case "Reserva":
-                this.database.getReservas().add(XMLParser.parseReserva(f));
-                return true;
+        // Procesar Propietarios
+        NodeList propietariosNodes = root.getElementsByTagName("Propietarios");
+        if (propietariosNodes.getLength() > 0) {
+            Element propietariosElement = (Element) propietariosNodes.item(0);
+            NodeList propietarioList = propietariosElement.getElementsByTagName("Propietario");
+            for (int i = 0; i < propietarioList.getLength(); i++) {
+                Propietario pr = XMLParser.parsePropietarioBS((Element) propietarioList.item(i));
+                this.nuevoUsuario(pr);
+            }
         }
+
+        // Procesar Clientes
+        NodeList clientesNodes = root.getElementsByTagName("Clientes");
+        if (clientesNodes.getLength() > 0) {
+            Element clientesElement = (Element) clientesNodes.item(0);
+            NodeList clienteList = clientesElement.getElementsByTagName("Cliente");
+            for (int i = 0; i < clienteList.getLength(); i++) {
+                Cliente c = XMLParser.parseClienteBS((Element) clienteList.item(i));
+                this.nuevoUsuario(c);
+            }
+        }
+
+        // Procesar Locales
+        NodeList localesNodes = root.getElementsByTagName("Locales");
+        if (localesNodes.getLength() > 0) {
+            Element localesElement = (Element) localesNodes.item(0);
+
+            // Bares
+           NodeList barNodes = localesElement.getElementsByTagName("Bar");
+            for (int i = 0; i < barNodes.getLength(); i++) {
+                Bar bar = XMLParser.parseBarBS((Element) barNodes.item(i));
+                cargarReviews((Element) barNodes.item(i), bar);
+                cargarReservasBar((Element) barNodes.item(i), bar);        // Cargar reservas
+                this.nuevoLocal(bar);
+            }
+
+            // Pubs
+            NodeList pubNodes = localesElement.getElementsByTagName("Pub");
+            for (int i = 0; i < pubNodes.getLength(); i++) {
+                Pub pub = XMLParser.parsePubBS((Element) pubNodes.item(i));
+                cargarReviews((Element) pubNodes.item(i), pub);
+                this.nuevoLocal(pub);
+            }
+
+            // Restaurantes
+            NodeList restNodes = localesElement.getElementsByTagName("Restaurante");
+            for (int i = 0; i < restNodes.getLength(); i++) {
+                Restaurante r = XMLParser.parseRestauranteBS((Element) restNodes.item(i));
+                cargarReviews((Element) restNodes.item(i), r);
+                cargarReservasRestaurante((Element) barNodes.item(i), r); 
+                this.nuevoLocal(r);
+            }
+        }
+
+        
+
+        return true;
 
     } catch (Exception ex) {
         ex.printStackTrace();
         return false;
     }
+}
+    private void cargarReviews(Element localElement, Local local) throws XMLParsingException {
+    NodeList reviewsNodes = localElement.getElementsByTagName("Reviews");
+    if (reviewsNodes.getLength() > 0) {
+        Element reviewsElement = (Element) reviewsNodes.item(0);
+        NodeList reviewList = reviewsElement.getElementsByTagName("Review");
+        for (int i = 0; i < reviewList.getLength(); i++) {
+            Review rv = XMLParser.parseReviewBS((Element) reviewList.item(i));
+            
+            // Cargar contestaciones de esta review
+            NodeList contestacionesNodes = ((Element) reviewList.item(i)).getElementsByTagName("Contestacion");
+            for (int j = 0; j < contestacionesNodes.getLength(); j++) {
+                Contestacion c = XMLParser.parseContestacionBS((Element) contestacionesNodes.item(j));
+                rv.setContestacion(c);
+                
+            }
+            
+            local.addReview(rv);
+        }
+    }
+}
+    private void cargarReservasBar(Element localElement, Bar local) throws XMLParsingException {
+    NodeList reservasNodes = localElement.getElementsByTagName("Reservas");
+    if (reservasNodes.getLength() > 0) {
+        Element reservasElement = (Element) reservasNodes.item(0);
+        NodeList reservaList = reservasElement.getElementsByTagName("Reserva");
 
-    return false;
+        // Inicializar la lista de reservas si es null
+        if (local.getReservas() == null) {
+            local.setReservas(new ArrayList<>());
+        }
+
+        for (int i = 0; i < reservaList.getLength(); i++) {
+            Element reservaElement = (Element) reservaList.item(i);
+
+            // Parsear la reserva
+            Reserva r = XMLParser.parseReservaBS(reservaElement);
+
+            // Parsear el cliente dentro de la reserva
+            NodeList clienteNodes = reservaElement.getElementsByTagName("Cliente");
+            if (clienteNodes.getLength() > 0) {
+                Element clienteElement = (Element) clienteNodes.item(0);
+                Cliente c = XMLParser.parseClienteBS(clienteElement);
+                r.setCliente(c);   // asignar cliente a la reserva
+            }
+
+            r.setLocal(local);      // asignar local a la reserva
+            local.getReservas().add(r);
+        }
+    }
 }
 
+    private void cargarReservasRestaurante(Element localElement, Restaurante local) throws XMLParsingException {
+    NodeList reservasNodes = localElement.getElementsByTagName("Reservas");
+    if (reservasNodes.getLength() > 0) {
+        Element reservasElement = (Element) reservasNodes.item(0);
+        NodeList reservaList = reservasElement.getElementsByTagName("Reserva");
+        for (int i = 0; i < reservaList.getLength(); i++) {
+            Element reservaElement = (Element) reservaList.item(i);
+            
+            // Parsear la reserva
+            Reserva r = XMLParser.parseReservaBS(reservaElement);
+            
+            // Parsear el cliente dentro de la reserva
+            NodeList clienteNodes = reservaElement.getElementsByTagName("Cliente");
+            if (clienteNodes.getLength() > 0) {
+                Element clienteElement = (Element) clienteNodes.item(0);
+                Cliente c = XMLParser.parseClienteBS(clienteElement);
+                r.setCliente(c);   // asignar cliente a la reserva
+            }
+            
+            r.setLocal(local);      // asignar local a la reserva
+            if (local.getReservas() == null) {
+                local.setReservas(new ArrayList<>()); // inicializar lista si es null
+            }
+            local.getReservas().add(r);
+        }
+    }
+}
 
 
 }

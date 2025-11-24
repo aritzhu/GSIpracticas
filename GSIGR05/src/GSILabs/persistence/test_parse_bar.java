@@ -27,7 +27,7 @@ public class test_parse_bar {
             System.out.println("Calle: " + bar.getDireccion().getCalle());
             System.out.println("Número: " + bar.getDireccion().getNumero());
             System.out.println("Especialidades: " + bar.getEspecialidades());
-            System.out.println("Dueños: " + bar.getDueños().size());
+            System.out.println("Propietarios: " + bar.getDueños().size());
         } 
         catch (XMLParsingException e) {
             System.err.println("Error en el XML: " + e.getMessage());
@@ -56,7 +56,7 @@ public class test_parse_bar {
             System.out.println("Calle: " + bar.getDireccion().getCalle());
             System.out.println("Número: " + bar.getDireccion().getNumero());
             System.out.println("Especialidades: " + bar.getEspecialidades());
-            System.out.println("Dueños: " + bar.getDueños().size());
+            System.out.println("Propietarios: " + bar.getDueños().size());
 
         } catch (XMLParsingException e) {
             System.err.println("Error en el XML: " + e.getMessage());

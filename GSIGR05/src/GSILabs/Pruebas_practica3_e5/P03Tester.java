@@ -26,7 +26,7 @@ public class P03Tester {
             } else {
                 System.err.println("Error al guardar el archivo XML de bs1.");
             }
-
+            System.out.println("*****************************************");
             // Método de instancia
             BusinessSystem bs2 = new BusinessSystem();
             boolean ok = bs2.loadXMLFile(f);

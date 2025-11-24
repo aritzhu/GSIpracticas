@@ -1,6 +1,7 @@
 package Dominio.BTesting.P10;
 
 import Dominio.BModel.Bar;
+import Dominio.BModel.Cliente;
 import Dominio.BModel.Direccion;
 import Dominio.BModel.Propietario;
 import Dominio.BModel.Review;
@@ -16,14 +17,14 @@ public class Tester10 {
             List<Review> reviews = new ArrayList<>();
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             Date fechaNacimiento = sdf.parse("15/11/1990");
-
+            
             // Creamos usuarios
-            Propietario usuario1 = new Propietario(reviews, "001", "Mario", "1234pass", 34, fechaNacimiento);
-
+            Cliente usuario1 = new Cliente(reviews, "001", "Mario", "1234pass", 34, fechaNacimiento);
+            Propietario usuario2 = new Propietario("001", "Mario", "1234pass", 34, fechaNacimiento);
             // Creamos dirección y local
             Direccion direccion = new Direccion("Pamplona", "Navarra", "Calle Mayor", 10);
             List<Propietario> duenosIniciales = new ArrayList<>();
-            duenosIniciales.add(usuario1);
+            duenosIniciales.add(usuario2);
 
             Bar bar = new Bar("Bar Central", direccion, duenosIniciales);
 

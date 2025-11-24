@@ -137,5 +137,9 @@ public class Local implements XMLRepresentable{
     public boolean saveToXML(String filePath) {
         return saveToXML(new File(filePath));
     }
+
+     public void addReview(Review rv){
+         reviews.add(rv);
+     };
     
 }

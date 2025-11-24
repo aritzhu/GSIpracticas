@@ -20,10 +20,11 @@ public class Review implements XMLRepresentable{
     private String comentario;
     private Date fechaVisita;
     private Date fechaEscritura;
+    private Contestacion contestacion;
 
-   private Propietario autor;
+   private Cliente autor;
 
-    public Review(int valoracion, String comentario, Date fechaVisita, Propietario autor) {
+    public Review(int valoracion, String comentario, Date fechaVisita, Cliente autor) {
         if (comentario.length() <= 500) {
             this.valoracion = valoracion;
             this.comentario = comentario;
@@ -36,6 +37,14 @@ public class Review implements XMLRepresentable{
     }
 
     public Review() {
+    }
+
+    public Contestacion getContestacion() {
+        return contestacion;
+    }
+
+    public void setContestacion(Contestacion contestacion) {
+        this.contestacion = contestacion;
     }
     
     
@@ -55,7 +64,7 @@ public class Review implements XMLRepresentable{
         return fechaEscritura;
     }
 
-    public Propietario getAutor() {
+    public Cliente getAutor() {
         return autor;
     }
     
@@ -70,7 +79,9 @@ public class Review implements XMLRepresentable{
         if (fechaEscritura != null)
             xml.append("   <FechaEscritura>").append(fechaEscritura).append("</FechaEscritura>\n");
         if (autor != null)
-            xml.append("   <Autor id=\"").append(autor.getID()).append("\"/>\n");
+            xml.append("   <Cliente id=\"").append(autor.getID()).append("\"/>\n");
+        if (contestacion != null) 
+            xml.append(contestacion.toXML());
         xml.append("</Review>\n");
         return xml.toString();
     }

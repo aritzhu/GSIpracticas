@@ -32,10 +32,10 @@ public class Tester09 {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             Date fechaNacimiento = sdf.parse("15/11/1990");
 
-            Propietario dueno1 = new Propietario(reviews, "001", "Mario", "1234pass", 34, fechaNacimiento);
-            Propietario dueno2 = new Propietario(reviews, "002", "Ana", "pass5678", 28, fechaNacimiento);
-            Propietario dueno3 = new Propietario(reviews, "003", "Luis", "qwerty", 40, fechaNacimiento);
-            Propietario dueno4 = new Propietario(reviews, "004", "Laura", "zxcvb", 22, fechaNacimiento);
+            Propietario dueno1 = new Propietario("001", "Mario", "1234pass", 34, fechaNacimiento);
+            Propietario dueno2 = new Propietario("002", "Ana", "pass5678", 28, fechaNacimiento);
+            Propietario dueno3 = new Propietario("003", "Luis", "qwerty", 40, fechaNacimiento);
+            Propietario dueno4 = new Propietario("004", "Laura", "zxcvb", 22, fechaNacimiento);
 
             Direccion direccion = new Direccion("Pamplona", "Navarra", "Calle Mayor", 10);
             List<Propietario> duenosIniciales = new ArrayList<>();

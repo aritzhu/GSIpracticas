@@ -43,6 +43,23 @@ public class Cliente extends Usuario implements XMLRepresentable{
 
         return xml.toString();
     }
+    
+    public String toXML(int level) {
+        String indent = "   ".repeat(level); // 3 espacios por nivel
+        StringBuilder xml = new StringBuilder();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        xml.append(indent).append("<Cliente id=\"").append(getID()).append("\">\n");
+        xml.append(indent).append("   <Nick>").append(getNick()).append("</Nick>\n");
+        xml.append(indent).append("   <Edad>").append(getEdad()).append("</Edad>\n");
+        if (getFechaNacimiento() != null) {
+            xml.append(indent).append("   <FechaNacimiento>").append(sdf.format(getFechaNacimiento()))
+               .append("</FechaNacimiento>\n");
+        }
+        xml.append(indent).append("</Cliente>\n");
+
+        return xml.toString();
+    }
 
     @Override
     public boolean saveToXML(File f) {

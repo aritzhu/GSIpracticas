@@ -21,11 +21,22 @@ public class Propietario extends Usuario implements XMLRepresentable{
     
     private final boolean esCliente = false;
     private List<Contestacion> contestaciones;
-    public Propietario(List<Review> reviews, String ID, String nick, String contrasenia, int edad, Date fechaNacimineto) {
+    
+    public Propietario(List<Contestacion> contestaciones, String ID, String nick, String contrasenia, int edad, Date fechaNacimineto) {
+        super(ID, nick, contrasenia, edad, fechaNacimineto);
+        this.contestaciones = contestaciones;
+    }
+    public Propietario(String ID, String nick, String contrasenia, int edad, Date fechaNacimineto) {
+        super(ID, nick, contrasenia, edad, fechaNacimineto);
+    }
+
+    public Propietario(List<Local> locales, List<Contestacion> contestaciones, String ID, String nick, String contrasenia, int edad, Date fechaNacimineto) {
         super(ID, nick, contrasenia, edad, fechaNacimineto);
         this.locales = locales;
         this.contestaciones = contestaciones;
     }
+    
+    
     public boolean esCliente(){
         return esCliente;
     }
@@ -40,23 +51,6 @@ public class Propietario extends Usuario implements XMLRepresentable{
 
         xml.append("<Propietario id=\"").append(getID()).append("\">\n");
         xml.append(usuarioXML);
-
-        // 🔹 Locales
-        xml.append("   <Locales>\n");
-        for (Local l : locales) {
-            xml.append("       <Local>\n");
-            xml.append("           <Nombre>").append(l.getNombre()).append("</Nombre>\n");
-            xml.append("           <Direccion>").append(l.getDireccion()).append("</Direccion>\n");
-            xml.append("       </Local>\n");
-        }
-        xml.append("   </Locales>\n");
-
-        // 🔹 Contestaciones
-        xml.append("   <Contestaciones>\n");
-        for (Contestacion c : contestaciones) {
-            xml.append(c.toXML()); // cada contestación ya genera su propio XML
-        }
-        xml.append("   </Contestaciones>\n");
 
         xml.append("</Propietario>\n");
         return xml.toString();
