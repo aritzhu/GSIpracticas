@@ -18,7 +18,8 @@ import java.util.Date;
  *
  * @author alumno
  */
-public class Usuario implements XMLRepresentable{
+public class Usuario implements XMLRepresentable,java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     private String ID;
     private String nick; 
     private String contrasenia;

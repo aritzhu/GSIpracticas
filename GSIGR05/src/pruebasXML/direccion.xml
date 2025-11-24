@@ -1,6 +1,6 @@
-<direccion>
-    <localidad>Bilbao</localidad>
-    <provincia>Bizkaia</provincia>
-    <calle>Autonomia</calle>
-    <numero>16</numero>
-</direccion>
+<Direccion>
+    <Localidad>Bilbao</Localidad>
+    <Provincia>Bizkaia</Provincia>
+    <Calle>Autonomia</Calle>
+    <Numero>16</Numero>
+</Direccion>

@@ -14,11 +14,13 @@ import java.util.List;
  *
  * @author alumno
  */
-public class Restaurante extends Local implements Reservable, XMLRepresentable{
+public class Restaurante extends Local implements Reservable, XMLRepresentable, java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     private float precioMenu;
     private int capacidadComensales;
     private int capacidadComensalesMesa;
     private final boolean esReservable= true;
+    private List<Reserva> reservas;
 
     public Restaurante(String nombre, Direccion dirección, List<Propietario> dueños) {
         super(nombre, dirección, dueños);
@@ -34,6 +36,14 @@ public class Restaurante extends Local implements Reservable, XMLRepresentable{
     }
     public float getPrecioMenu() {
         return precioMenu;
+    }
+
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
     }
 
     public void setPrecioMenu(float precioMenu) {
@@ -57,23 +67,33 @@ public class Restaurante extends Local implements Reservable, XMLRepresentable{
     }
     
     @Override
-    public String toXML() {
-        StringBuilder xml = new StringBuilder();
-        xml.append("<Restaurante>\n");
+public String toXML() {
+    StringBuilder xml = new StringBuilder();
+    xml.append("<Restaurante>\n");
 
-        // Reutilizamos XML de Local
-        String localXML = super.toXML();
-        localXML = localXML.replaceFirst("<Local>", "").replaceFirst("</Local>$", "");
-        xml.append(localXML);
+    // Reutilizamos XML de Local
+    String localXML = super.toXML();
+    localXML = localXML.replaceFirst("<Local>", "").replaceFirst("</Local>$", "");
+    xml.append(localXML);
 
-        // Atributos específicos de Restaurante
-        xml.append("   <PrecioMenu>").append(precioMenu).append("</PrecioMenu>\n");
-        xml.append("   <CapacidadComensales>").append(capacidadComensales).append("</CapacidadComensales>\n");
-        xml.append("   <CapacidadComensalesMesa>").append(capacidadComensalesMesa).append("</CapacidadComensalesMesa>\n");
+    // Atributos específicos de Restaurante
+    xml.append("   <PrecioMenu>").append(precioMenu).append("</PrecioMenu>\n");
+    xml.append("   <CapacidadComensales>").append(capacidadComensales).append("</CapacidadComensales>\n");
+    xml.append("   <CapacidadComensalesMesa>").append(capacidadComensalesMesa).append("</CapacidadComensalesMesa>\n");
 
-        xml.append("</Restaurante>\n");
-        return xml.toString();
+    // Añadir reservas si hay
+    if (reservas != null && !reservas.isEmpty()) {
+        xml.append("   <Reservas>\n");
+        for (Reserva r : reservas) {
+            String reservaXML = r.toXML().replaceAll("(?m)^", "       ");
+            xml.append(reservaXML).append("\n");
+        }
+        xml.append("   </Reservas>\n");
     }
+
+    xml.append("</Restaurante>\n");
+    return xml.toString();
+}
 
     @Override
     public boolean saveToXML(File f) {

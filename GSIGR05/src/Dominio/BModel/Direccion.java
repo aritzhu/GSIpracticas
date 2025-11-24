@@ -13,7 +13,8 @@ import java.io.IOException;
  *
  * @author alumno
  */
-public class Direccion implements XMLRepresentable{
+public class Direccion implements XMLRepresentable, java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     private String localidad; 
     private String provincia; 
     private String calle;

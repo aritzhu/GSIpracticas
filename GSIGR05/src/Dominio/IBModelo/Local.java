@@ -21,7 +21,8 @@ import java.util.List;
  *
  * @author alumno
  */
-public class Local implements XMLRepresentable{
+public class Local implements XMLRepresentable, java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     private String nombre; 
     private Direccion direccion; 
     private List<Propietario> dueños; // maximo 3 minimo 1
@@ -137,5 +138,9 @@ public class Local implements XMLRepresentable{
     public boolean saveToXML(String filePath) {
         return saveToXML(new File(filePath));
     }
+
+     public void addReview(Review rv){
+         reviews.add(rv);
+     };
     
 }

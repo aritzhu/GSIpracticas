@@ -14,7 +14,8 @@ import java.util.Date;
 import java.util.List;
 
 
-public class Cliente extends Usuario implements XMLRepresentable{ 
+public class Cliente extends Usuario implements XMLRepresentable, java.io.Serializable{ 
+    private static final long serialVersionUID = 1L;
     private List<Review> reviews;
     private final boolean esCliente = true;
 
@@ -40,6 +41,23 @@ public class Cliente extends Usuario implements XMLRepresentable{
         }
 
         xml.append("</Cliente>\n");
+
+        return xml.toString();
+    }
+    
+    public String toXML(int level) {
+        String indent = "   ".repeat(level); // 3 espacios por nivel
+        StringBuilder xml = new StringBuilder();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        xml.append(indent).append("<Cliente id=\"").append(getID()).append("\">\n");
+        xml.append(indent).append("   <Nick>").append(getNick()).append("</Nick>\n");
+        xml.append(indent).append("   <Edad>").append(getEdad()).append("</Edad>\n");
+        if (getFechaNacimiento() != null) {
+            xml.append(indent).append("   <FechaNacimiento>").append(sdf.format(getFechaNacimiento()))
+               .append("</FechaNacimiento>\n");
+        }
+        xml.append(indent).append("</Cliente>\n");
 
         return xml.toString();
     }

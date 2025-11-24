@@ -13,7 +13,8 @@ import java.util.Date;
  *
  * @author alumno
  */
-public class Contestacion implements XMLRepresentable{
+public class Contestacion implements XMLRepresentable, java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     private Propietario dueño;
     private Review review;
     private String contestacion;
@@ -35,10 +36,6 @@ public class Contestacion implements XMLRepresentable{
         StringBuilder xml = new StringBuilder();
         xml.append("<Contestacion>\n");
         xml.append("   <Propietario id=\"").append(dueño.getID()).append("\"/>\n");
-        xml.append("   <Review>\n");
-        xml.append("       <Valoracion>").append(review.getValoracion()).append("</Valoracion>\n");
-        xml.append("       <Comentario>").append(review.getComentario()).append("</Comentario>\n");
-        xml.append("   </Review>\n");
         xml.append("   <Texto>").append(contestacion).append("</Texto>\n");
         xml.append("   <FechaEscritura>").append(fechaEscritura).append("</FechaEscritura>\n");
         xml.append("</Contestacion>\n");
@@ -66,6 +63,23 @@ public class Contestacion implements XMLRepresentable{
 public Review getReview() {
     return this.review;
 }
+
+    public void setDueño(Propietario dueño) {
+        this.dueño = dueño;
+    }
+
+    public void setReview(Review review) {
+        this.review = review;
+    }
+
+    public void setContestacion(String contestacion) {
+        this.contestacion = contestacion;
+    }
+
+    public void setFechaEscritura(Date fechaEscritura) {
+        this.fechaEscritura = fechaEscritura;
+    }
+
 
 public String getContestacion() {
     return this.contestacion;

@@ -1,22 +1,21 @@
 <Reserva>
-    <fechaReserva>2024-11-22</fechaReserva>
-    <descuento>10</descuento>
+    <FechaReserva>2024-11-22</FechaReserva>
+    <Descuento>10</Descuento>
+    <Cliente>
+        <Id>C9</Id>
+        <Nick>iker23</Nick>
+        <Contrasenia>xxyyzz</Contrasenia>
+        <Edad>22</Edad>
+        <FechaNacimiento>2002-02-14</FechaNacimiento>
+    </Cliente>
 
-    <cliente>
-        <id>C9</id>
-        <nick>iker23</nick>
-        <contrasenia>xxyyzz</contrasenia>
-        <edad>22</edad>
-        <fechaNacimiento>2002-02-14</fechaNacimiento>
-    </cliente>
-
-    <local>
-        <nombre>Bar Prueba</nombre>
-        <direccion>
-            <localidad>Donostia</localidad>
-            <provincia>Gipuzkoa</provincia>
-            <calle>Mirakontxa</calle>
-            <numero>88</numero>
-        </direccion>
-    </local>
+    <Local>
+        <Nombre>Bar Prueba</Nombre>
+        <Direccion>
+            <Localidad>Donostia</Localidad>
+            <Provincia>Gipuzkoa</Provincia>
+            <Calle>Mirakontxa</Calle>
+            <Numero>88</Numero>
+        </Direccion>
+    </Local>
 </Reserva>

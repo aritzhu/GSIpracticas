@@ -7,7 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-public class Pub extends Local implements Reservable, XMLRepresentable {
+public class Pub extends Local implements Reservable, XMLRepresentable, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private int horaApertura;  // hora en formato 24h
     private int horaCierre;    // hora en formato 24h
     

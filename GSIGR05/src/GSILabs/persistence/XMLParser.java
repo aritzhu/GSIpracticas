@@ -74,8 +74,8 @@ public class XMLParser {
             throw new XMLParsingException("El XML no representa un objeto <Bar>.");
 
         // --- Campos básicos ---
-        String nombre = getTagValue(root, "nombre");
-        String precioStr = getTagValue(root, "precioMenu");
+        String nombre = getTagValue(root, "Nombre");
+        String precioStr = getTagValue(root, "PrecioMenu");
 
         if (nombre == null || precioStr == null)
             throw new XMLParsingException("Faltan campos obligatorios en el XML de Bar.");
@@ -89,7 +89,7 @@ public class XMLParser {
 
         // --- Especialidades ---
         List<EnumEspecialidadesBar> especialidades = new ArrayList<>();
-        NodeList espNodes = root.getElementsByTagName("especialidad");
+        NodeList espNodes = root.getElementsByTagName("Especialidad");
         for (int i = 0; i < espNodes.getLength(); i++) {
             String val = espNodes.item(i).getTextContent().trim();
             try {
@@ -100,12 +100,12 @@ public class XMLParser {
         }
 
         // --- Dirección ---
-        Element dirElem = (Element) root.getElementsByTagName("direccion").item(0);
+        Element dirElem = (Element) root.getElementsByTagName("Direccion").item(0);
         Direccion direccion = parseDireccion(dirElem);
 
         // --- Propietarios ---
         List<Propietario> duenos = new ArrayList<>();
-        NodeList propietarios = root.getElementsByTagName("propietario");
+        NodeList propietarios = root.getElementsByTagName("Propietario");
         for (int i = 0; i < propietarios.getLength(); i++) {
             Element e = (Element) propietarios.item(i);
             duenos.add(parsePropietario(e));
@@ -122,10 +122,10 @@ public class XMLParser {
     private static Direccion parseDireccion(Element e) throws XMLParsingException {
         if (e == null) throw new XMLParsingException("Falta el elemento <direccion> en el XML.");
 
-        String localidad = getTagValue(e, "localidad");
-        String provincia = getTagValue(e, "provincia");
-        String calle = getTagValue(e, "calle");
-        String numeroStr = getTagValue(e, "numero");
+        String localidad = getTagValue(e, "Localidad");
+        String provincia = getTagValue(e, "Provincia");
+        String calle = getTagValue(e, "Calle");
+        String numeroStr = getTagValue(e, "Numero");
 
         if (localidad == null || provincia == null || calle == null || numeroStr == null)
             throw new XMLParsingException("Datos incompletos en la dirección.");
@@ -143,11 +143,11 @@ public class XMLParser {
     if (e == null) throw new XMLParsingException("Elemento <propietario> nulo o mal formado.");
 
     // --- Datos básicos ---
-    String id = getTagValue(e, "id");
-    String nick = getTagValue(e, "nick");
-    String contrasenia = getTagValue(e, "contrasenia");
-    String edadStr = getTagValue(e, "edad");
-    String fechaStr = getTagValue(e, "fechaNacimiento");
+    String id = getTagValue(e, "Id");
+    String nick = getTagValue(e, "Nick");
+    String contrasenia = getTagValue(e, "Contrasenia");
+    String edadStr = getTagValue(e, "Edad");
+    String fechaStr = getTagValue(e, "FechaNacimiento");
 
     if (id == null || nick == null || contrasenia == null || edadStr == null || fechaStr == null)
         throw new XMLParsingException("Datos incompletos del propietario.");
@@ -166,34 +166,15 @@ public class XMLParser {
     } catch (ParseException ex) {
         throw new XMLParsingException("Fecha de nacimiento inválida: " + fechaStr);
     }
-
-    // --- Parsear locales (si los hay) ---
-    List<Local> locales = new ArrayList<>();
-    NodeList localesNodes = e.getElementsByTagName("local");
-    for (int i = 0; i < localesNodes.getLength(); i++) {
-        Element localElem = (Element) localesNodes.item(i);
-        Local local = parseLocal(localElem);
-        if (local != null) locales.add(local);
-    }
-
-    // --- Parsear contestaciones (si las hay) ---
-    List<Contestacion> contestaciones = new ArrayList<>();
-    NodeList contNodes = e.getElementsByTagName("contestacion");
-    for (int i = 0; i < contNodes.getLength(); i++) {
-        Element contElem = (Element) contNodes.item(i);
-        Contestacion cont = parseContestacion(contElem);
-        if (cont != null) contestaciones.add(cont);
-    }
-
     // --- Crear propietario ---
-    return new Propietario(id, nick, contrasenia, edad, fecha, locales, contestaciones);
+    return new Propietario(id, nick, contrasenia, edad, fecha);
 }
     private static Contestacion parseContestacion(Element e) throws XMLParsingException {
     if (e == null)
         throw new XMLParsingException("Elemento <contestacion> nulo o mal formado.");
 
     // Tomamos solo el campo que realmente existe en la clase: el texto/comentario
-    String comentario = getTagValue(e, "comentario");
+    String comentario = getTagValue(e, "Comentario");
 
     if (comentario == null || comentario.isEmpty())
         throw new XMLParsingException("Datos incompletos en contestación (falta comentario).");
@@ -207,17 +188,17 @@ public class XMLParser {
         throw new XMLParsingException("Elemento <local> nulo o mal formado.");
 
     // --- Nombre del local ---
-    String nombre = getTagValue(e, "nombre");
+    String nombre = getTagValue(e, "Nombre");
     if (nombre == null)
         throw new XMLParsingException("Nombre de local ausente o nulo.");
 
     // --- Dirección (subelemento complejo) ---
-    Element dirElem = (Element) e.getElementsByTagName("direccion").item(0);
+    Element dirElem = (Element) e.getElementsByTagName("Direccion").item(0);
     Direccion direccion = parseDireccion(dirElem);
 
     // --- Lista de propietarios ---
     List<Propietario> duenos = new ArrayList<>();
-    NodeList propNodes = e.getElementsByTagName("propietario");
+    NodeList propNodes = e.getElementsByTagName("Propietario");
     for (int i = 0; i < propNodes.getLength(); i++) {
         Element propElem = (Element) propNodes.item(i);
         Propietario p = parsePropietario(propElem);
@@ -259,11 +240,11 @@ public class XMLParser {
             throw new XMLParsingException("El XML no representa un objeto <Cliente>.");
 
         // Campos básicos heredados de Usuario
-        String id = getTagValue(root, "id");
-        String nick = getTagValue(root, "nick");
-        String contrasenia = getTagValue(root, "contrasenia");
-        String edadStr = getTagValue(root, "edad");
-        String fechaStr = getTagValue(root, "fechaNacimiento");
+        String id = getTagValue(root, "Id");
+        String nick = getTagValue(root, "Nick");
+        String contrasenia = getTagValue(root, "Contrasenia");
+        String edadStr = getTagValue(root, "Edad");
+        String fechaStr = getTagValue(root, "FechaNacimiento");
 
         if (id == null || nick == null || contrasenia == null || edadStr == null || fechaStr == null)
             throw new XMLParsingException("Faltan campos obligatorios en el XML de Cliente.");
@@ -312,18 +293,21 @@ public class XMLParser {
             throw new XMLParsingException("Error al leer el archivo XML de Review: " + e.getMessage());
         }
     }
+    
     private static Review parseReviewFromDocument(Document doc) throws XMLParsingException {
         Element root = doc.getDocumentElement();
-        if (!root.getNodeName().equalsIgnoreCase("Review"))
+        if (!root.getNodeName().equalsIgnoreCase("Review")) {
             throw new XMLParsingException("El XML no representa un objeto <Review>.");
+        }
 
         // --- Campos obligatorios ---
-        String valoracionStr = getTagValue(root, "valoracion");
-        String comentario = getTagValue(root, "comentario");
-        String fechaVisitaStr = getTagValue(root, "fechaVisita");
+        String valoracionStr = getTagValue(root, "Valoracion");
+        String comentario = getTagValue(root, "Comentario");
+        String fechaVisitaStr = getTagValue(root, "FechaVisita");
 
-        if (valoracionStr == null || comentario == null || fechaVisitaStr == null)
+        if (valoracionStr == null || comentario == null || fechaVisitaStr == null) {
             throw new XMLParsingException("Faltan campos obligatorios en la Review.");
+        }
 
         int valoracion;
         try {
@@ -340,18 +324,18 @@ public class XMLParser {
             throw new XMLParsingException("Fecha de visita inválida: " + fechaVisitaStr);
         }
 
-        // --- Autor (Propietario) ---
-        Propietario autor = null;
-        Element autorElem = (Element) root.getElementsByTagName("autor").item(0);
+        // --- Autor (Cliente) ---
+        Cliente autor = null;
+        Element autorElem = (Element) root.getElementsByTagName("Cliente").item(0);
         if (autorElem != null) {
-            autor = parsePropietario(autorElem);
+            autor = parseCliente(autorElem);
         }
 
         // Crear el objeto Review usando el constructor principal
         Review r = new Review(valoracion, comentario, fechaVisita, autor);
 
         // Si el XML tiene fechaEscritura, la fijamos por reflexión (ya que es privada)
-        String fechaEscrituraStr = getTagValue(root, "fechaEscritura");
+        String fechaEscrituraStr = getTagValue(root, "FechaEscritura");
         if (fechaEscrituraStr != null) {
             try {
                 Date fechaEscritura = new SimpleDateFormat("yyyy-MM-dd").parse(fechaEscrituraStr);
@@ -391,36 +375,45 @@ public class XMLParser {
         }
     }
     private static Contestacion parseContestacionFromDocument(Document doc) throws XMLParsingException {
-        Element root = doc.getDocumentElement();
-        if (!root.getNodeName().equalsIgnoreCase("Contestacion"))
-            throw new XMLParsingException("El XML no representa un objeto <Contestacion>.");
+    Element root = doc.getDocumentElement();
+    
+    if (!root.getNodeName().equalsIgnoreCase("Contestacion"))
+        throw new XMLParsingException("El XML no representa un objeto <Contestacion>.");
 
-        // --- Campos ---
-        Element duenioElem = (Element) root.getElementsByTagName("dueño").item(0);
-        Element reviewElem = (Element) root.getElementsByTagName("review").item(0);
-        String texto = getTagValue(root, "contestacion");
-        String fechaStr = getTagValue(root, "fechaEscritura");
-
-        if (duenioElem == null || reviewElem == null || texto == null)
-            throw new XMLParsingException("Faltan datos en la Contestacion.");
-
-        Propietario duenio = parsePropietario(duenioElem);
-        Review review = parseReviewFromDocument(buildDocumentFromElement(reviewElem));
-        Contestacion c = new Contestacion(duenio, review, texto);
-
-        if (fechaStr != null) {
-            try {
-                Date fecha = new SimpleDateFormat("yyyy-MM-dd").parse(fechaStr);
-                java.lang.reflect.Field f = Contestacion.class.getDeclaredField("fechaEscritura");
-                f.setAccessible(true);
-                f.set(c, fecha);
-            } catch (Exception e) {
-                throw new XMLParsingException("Error al asignar fecha de escritura: " + e.getMessage());
-            }
-        }
-
-        return c;
+    // --- Propietario ---
+    Element propietarioElem = (Element) root.getElementsByTagName("Propietario").item(0);
+    if (propietarioElem == null) {
+        throw new XMLParsingException("Faltan datos de propietario.");
     }
+    Propietario propietario = parsePropietario(propietarioElem);
+
+    // --- Texto de la contestación ---
+    String texto = getTagValue(root, "ContestacionTexto");
+    if (texto == null) {
+        throw new XMLParsingException("Faltan datos de contestacion en la Contestacion.");
+    }
+
+    // --- Fecha de escritura ---
+    String fechaStr = getTagValue(root, "FechaEscritura");
+    if (fechaStr == null) {
+        throw new XMLParsingException("Faltan FechaEscritura en la Contestacion.");
+    }
+
+    Contestacion c = new Contestacion(propietario, null, texto);
+
+    try {
+        Date fecha = new SimpleDateFormat("yyyy-MM-dd").parse(fechaStr);
+        java.lang.reflect.Field f = Contestacion.class.getDeclaredField("fechaEscritura");
+        f.setAccessible(true);
+        f.set(c, fecha);
+    } catch (Exception e) {
+        throw new XMLParsingException("Error al asignar fecha de escritura: " + e.getMessage());
+    }
+
+    return c;
+}
+
+
     private static Document buildDocumentFromElement(Element element) throws XMLParsingException {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -462,10 +455,10 @@ public class XMLParser {
         if (e == null)
             throw new XMLParsingException("Elemento <direccion> nulo o mal formado.");
 
-        String localidad = getTagValue(e, "localidad");
-        String provincia = getTagValue(e, "provincia");
-        String calle = getTagValue(e, "calle");
-        String numeroStr = getTagValue(e, "numero");
+        String localidad = getTagValue(e, "Localidad");
+        String provincia = getTagValue(e, "Provincia");
+        String calle = getTagValue(e, "Calle");
+        String numeroStr = getTagValue(e, "Numero");
 
         if (localidad == null || provincia == null || calle == null || numeroStr == null)
             throw new XMLParsingException("Datos incompletos en la dirección.");
@@ -488,7 +481,7 @@ public class XMLParser {
         doc.getDocumentElement().normalize();
 
         Element root = doc.getDocumentElement();
-        if (!root.getTagName().equals("propietario")) {
+        if (!root.getTagName().equals("Propietario")) {
             throw new XMLParsingException("Raíz inválida: se esperaba <propietario>.");
         }
 
@@ -507,7 +500,7 @@ public static Propietario parsePropietario(String xmlContent) throws XMLParsingE
         doc.getDocumentElement().normalize();
 
         Element root = doc.getDocumentElement();
-        if (!root.getTagName().equals("propietario")) {
+        if (!root.getTagName().equals("Propietario")) {
             throw new XMLParsingException("Raíz inválida: se esperaba <propietario>.");
         }
 
@@ -551,14 +544,14 @@ private static Pub parsePubFromDocument(Document doc) throws XMLParsingException
         throw new XMLParsingException("El XML no representa un objeto <Pub>.");
 
     // nombre
-    String nombre = getTagValue(root, "nombre");
+    String nombre = getTagValue(root, "Nombre");
 
     if (nombre == null)
         throw new XMLParsingException("Falta el nombre en el XML Pub.");
 
     // horas
-    String hAperturaStr = getTagValue(root, "horaApertura");
-    String hCierreStr = getTagValue(root, "horaCierre");
+    String hAperturaStr = getTagValue(root, "HoraApertura");
+    String hCierreStr = getTagValue(root, "HoraCierre");
 
     int horaApertura = 0;
     int horaCierre = 0;
@@ -580,12 +573,12 @@ private static Pub parsePubFromDocument(Document doc) throws XMLParsingException
     }
 
     // dirección
-    Element dirElem = (Element) root.getElementsByTagName("direccion").item(0);
+    Element dirElem = (Element) root.getElementsByTagName("Direccion").item(0);
     Direccion direccion = parseDireccion(dirElem);
 
     // propietarios
     List<Propietario> duenos = new ArrayList<>();
-    NodeList propietarios = root.getElementsByTagName("propietario");
+    NodeList propietarios = root.getElementsByTagName("Propietario");
     for (int i = 0; i < propietarios.getLength(); i++) {
         Element e = (Element) propietarios.item(i);
         duenos.add(parsePropietario(e));
@@ -626,14 +619,14 @@ private static Reserva parseReservaFromDocument(Document doc) throws XMLParsingE
     if (!root.getNodeName().equals("Reserva"))
         throw new XMLParsingException("El XML no representa un objeto <Reserva>.");
 
-    // campos básicos
-    String fechaStr = getTagValue(root, "fechaReserva");
-    String descuentoStr = getTagValue(root, "descuento");
+    // --- Campos básicos ---
+    String fechaStr = getTagValue(root, "FechaReserva");
+    String descuentoStr = getTagValue(root, "Descuento");
 
     if (fechaStr == null || descuentoStr == null)
         throw new XMLParsingException("Faltan campos obligatorios en Reserva.");
 
-    // fecha
+    // --- Fecha ---
     Date fecha;
     try {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -642,7 +635,7 @@ private static Reserva parseReservaFromDocument(Document doc) throws XMLParsingE
         throw new XMLParsingException("Fecha de reserva inválida: " + fechaStr);
     }
 
-    // descuento
+    // --- Descuento ---
     int descuento;
     try {
         descuento = Integer.parseInt(descuentoStr);
@@ -650,28 +643,29 @@ private static Reserva parseReservaFromDocument(Document doc) throws XMLParsingE
         throw new XMLParsingException("Descuento inválido: " + descuentoStr);
     }
 
-    // cliente
-    Element clienteElem = (Element) root.getElementsByTagName("cliente").item(0);
-    Cliente cliente = parseCliente(clienteElem); // asumo que ya existe igual que parsePropietario
+    // --- Cliente ---
+    Element clienteElem = (Element) root.getElementsByTagName("Cliente").item(0);
+    if (clienteElem == null)
+        throw new XMLParsingException("Falta <Cliente> en la Reserva.");
+    Cliente cliente = parseCliente(clienteElem);
 
-    // local (aquí hay factory similar Bar/Pub)
-    Element localElem = (Element) root.getElementsByTagName("local").item(0);
-    Local local = parseLocal(localElem); // este ya lo tienes, y dentro decide si es Bar/Pub/Restaurant/whatever
 
-    return new Reserva(fecha, descuento, cliente, local);
+    return new Reserva(fecha, descuento, cliente, null);
 }
+
+
 private static Cliente parseCliente(Element e) throws XMLParsingException {
     if (e == null)
-        throw new XMLParsingException("Elemento <cliente> nulo o mal formado.");
+        throw new XMLParsingException("Elemento <Cliente> nulo o mal formado.");
 
-    String id = getTagValue(e, "id");
-    String nick = getTagValue(e, "nick");
-    String contrasenia = getTagValue(e, "contrasenia");
-    String edadStr = getTagValue(e, "edad");
-    String fechaStr = getTagValue(e, "fechaNacimiento");
+    String id = getTagValue(e, "Id");
+    String nick = getTagValue(e, "Nick");
+    String contrasenia = getTagValue(e, "Contrasenia");
+    String edadStr = getTagValue(e, "Edad");
+    String fechaStr = getTagValue(e, "FechaNacimiento");
 
     if (id == null || nick == null || contrasenia == null || edadStr == null || fechaStr == null)
-        throw new XMLParsingException("Datos incompletos del cliente.");
+        throw new XMLParsingException("Datos incompletos del Cliente.");
 
     int edad;
     try {
@@ -688,7 +682,7 @@ private static Cliente parseCliente(Element e) throws XMLParsingException {
         throw new XMLParsingException("Fecha de nacimiento inválida: " + fechaStr);
     }
 
-    // reviews de cliente NO vienen en XML → se inicializa vacía
+    // Reviews de cliente NO vienen en XML → se inicializa vacía
     List<Review> reviews = new ArrayList<>();
 
     return new Cliente(reviews, id, nick, contrasenia, edad, fecha);
@@ -727,7 +721,7 @@ private static Restaurante parseRestauranteFromDocument(Document doc) throws XML
         throw new XMLParsingException("El XML no representa un objeto <Restaurante>.");
 
     // nombre
-    String nombre = getTagValue(root, "nombre");
+    String nombre = getTagValue(root, "Nombre");
     if (nombre == null)
         throw new XMLParsingException("Falta el nombre en el XML Restaurante.");
 
@@ -737,30 +731,30 @@ private static Restaurante parseRestauranteFromDocument(Document doc) throws XML
     int capMesa;
 
     try {
-        precioMenu = Float.parseFloat(getTagValue(root, "precioMenu"));
+        precioMenu = Float.parseFloat(getTagValue(root, "PrecioMenu"));
     } catch (Exception ex) {
         throw new XMLParsingException("precioMenu inválido");
     }
 
     try {
-        capComensales = Integer.parseInt(getTagValue(root, "capacidadComensales"));
+        capComensales = Integer.parseInt(getTagValue(root, "CapacidadComensales"));
     } catch (Exception ex) {
         throw new XMLParsingException("capacidadComensales inválido");
     }
 
     try {
-        capMesa = Integer.parseInt(getTagValue(root, "capacidadComensalesMesa"));
+        capMesa = Integer.parseInt(getTagValue(root, "CapacidadComensalesMesa"));
     } catch (Exception ex) {
         throw new XMLParsingException("capacidadComensalesMesa inválido");
     }
 
     // dirección
-    Element dirElem = (Element) root.getElementsByTagName("direccion").item(0);
+    Element dirElem = (Element) root.getElementsByTagName("Direccion").item(0);
     Direccion direccion = parseDireccion(dirElem);
 
     // propietarios
     List<Propietario> duenos = new ArrayList<>();
-    NodeList propietarios = root.getElementsByTagName("propietario");
+    NodeList propietarios = root.getElementsByTagName("Propietario");
     for (int i = 0; i < propietarios.getLength(); i++) {
         Element e = (Element) propietarios.item(i);
         duenos.add(parsePropietario(e));

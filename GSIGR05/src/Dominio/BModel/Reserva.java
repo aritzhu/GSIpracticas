@@ -16,7 +16,8 @@ import java.util.Date;
  *
  * @author alumno
  */
-public class Reserva implements XMLRepresentable{
+public class Reserva implements XMLRepresentable, java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     private Date fechaReserva;
     private int descuento;
     private Cliente cliente;
@@ -65,46 +66,30 @@ public class Reserva implements XMLRepresentable{
     }
     
     @Override
-    public String toXML() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        StringBuilder xml = new StringBuilder();
+public String toXML() {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    StringBuilder xml = new StringBuilder();
 
-        xml.append("<Reserva>\n");
-        xml.append("    <fechaReserva>").append(sdf.format(fechaReserva)).append("</fechaReserva>\n");
-        xml.append("    <descuento>").append(descuento).append("</descuento>\n\n");
+    xml.append("<Reserva>\n");
+    xml.append("    <FechaReserva>").append(sdf.format(fechaReserva)).append("</FechaReserva>\n");
+    xml.append("    <Descuento>").append(descuento).append("</Descuento>\n\n");
 
-        if (cliente != null) {
-            xml.append("    <cliente>\n");
-            xml.append("        <id>").append(cliente.getID()).append("</id>\n");
-            xml.append("        <nick>").append(cliente.getNick()).append("</nick>\n");
-            xml.append("        <contrasenia>").append(cliente.getContrasenia()).append("</contrasenia>\n");
-            xml.append("        <edad>").append(cliente.getEdad()).append("</edad>\n");
-            xml.append("        <fechaNacimiento>")
-               .append(sdf.format(cliente.getFechaNacimiento()))
-               .append("</fechaNacimiento>\n");
-            xml.append("    </cliente>\n\n");
-        }
-
-        if (local != null) {
-            xml.append("    <local>\n");
-            xml.append("        <nombre>").append(local.getNombre()).append("</nombre>\n");
-
-            if (local.getDireccion() != null) {
-                xml.append("        <direccion>\n");
-                xml.append("            <localidad>").append(local.getDireccion().getLocalidad()).append("</localidad>\n");
-                xml.append("            <provincia>").append(local.getDireccion().getProvincia()).append("</provincia>\n");
-                xml.append("            <calle>").append(local.getDireccion().getCalle()).append("</calle>\n");
-                xml.append("            <numero>").append(local.getDireccion().getNumero()).append("</numero>\n");
-                xml.append("        </direccion>\n");
-            }
-
-            xml.append("    </local>\n");
-        }
-
-        xml.append("</Reserva>");
-        return xml.toString();
+    if (cliente != null) {
+        xml.append("    <Cliente>\n");
+        xml.append("        <Id>").append(cliente.getID()).append("</Id>\n");
+        xml.append("        <Nick>").append(cliente.getNick()).append("</Nick>\n");
+        xml.append("        <Contrasenia>").append(cliente.getContrasenia()).append("</Contrasenia>\n");
+        xml.append("        <Edad>").append(cliente.getEdad()).append("</Edad>\n");
+        xml.append("        <FechaNacimiento>")
+           .append(sdf.format(cliente.getFechaNacimiento()))
+           .append("</FechaNacimiento>\n");
+        xml.append("    </Cliente>\n\n");
     }
-    
+
+    xml.append("</Reserva>");
+    return xml.toString();
+}
+
         @Override
     public boolean saveToXML(File f) {
         try (FileWriter fw = new FileWriter(f)) {
