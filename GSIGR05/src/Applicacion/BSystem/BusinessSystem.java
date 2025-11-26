@@ -46,6 +46,14 @@ public class BusinessSystem implements LeisureOffice, XMLRepresentable {
     public BusinessSystem() {
         this.database = new EjecuctionTimeDataBase();
     }
+
+    public EjecuctionTimeDataBase getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(EjecuctionTimeDataBase database) {
+        this.database = database;
+    }
     
     @Override
     public boolean nuevoUsuario(Usuario u) {
@@ -94,13 +102,21 @@ public class BusinessSystem implements LeisureOffice, XMLRepresentable {
 
     @Override
     public boolean nuevaReview(Review r) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (r == null) return false;
+        // Evitar duplicados: misma review ya existente
+        for (Review existente : database.getReviews()) {
+            if (existente.equals(r)) return false;
+        }
+        database.getReviews().add(r);
+        return true;
     }
 
     @Override
     public boolean eliminaReview(Review r) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (r == null) return false;
+        return database.getReviews().remove(r);
     }
+
 
     @Override
     public boolean existeRewiew(Review r) {
@@ -254,8 +270,22 @@ public class BusinessSystem implements LeisureOffice, XMLRepresentable {
 
     @Override
     public Restaurante[] listarRestaurantes(String ciudad, String provincia) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        List<Restaurante> resultado = new ArrayList<>();
+
+        for (Local l : database.getLocales()) {
+            if (l instanceof Restaurante) {
+                boolean ciudadOk = (ciudad == null || ciudad.isEmpty() || l.getDireccion().getLocalidad().equalsIgnoreCase(ciudad));
+                boolean provinciaOk = (provincia == null || provincia.isEmpty() || l.getDireccion().getProvincia().equalsIgnoreCase(provincia));
+
+                if (ciudadOk && provinciaOk) {
+                    resultado.add((Restaurante) l);
+                }
+            }
+        }
+
+        return resultado.toArray(new Restaurante[0]);
     }
+
 
     @Override
     public Pub[] listarPubs(String ciudad, String provincia) {

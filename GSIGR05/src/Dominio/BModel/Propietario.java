@@ -16,7 +16,9 @@ import java.util.List;
  *
  * @author alumno
  */
-public class Propietario extends Usuario implements XMLRepresentable{
+public class Propietario extends Usuario implements XMLRepresentable, java.io.Serializable{
+    
+    private static final long serialVersionUID = 1L;
     private List<Local> locales;
     
     private final boolean esCliente = false;

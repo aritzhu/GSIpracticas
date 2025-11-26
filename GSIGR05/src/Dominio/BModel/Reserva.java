@@ -16,7 +16,8 @@ import java.util.Date;
  *
  * @author alumno
  */
-public class Reserva implements XMLRepresentable{
+public class Reserva implements XMLRepresentable, java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     private Date fechaReserva;
     private int descuento;
     private Cliente cliente;

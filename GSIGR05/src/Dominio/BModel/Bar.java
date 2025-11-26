@@ -16,7 +16,8 @@ import java.util.List;
  *
  * @author alumno
  */
-public class Bar extends Local implements Reservable, XMLRepresentable {
+public class Bar extends Local implements Reservable, XMLRepresentable, java.io.Serializable {
+    private static final long serialVersionUID = 1L;
     private float precioMenu;
     private final boolean esReservable= true;
     private List<EnumEspecialidadesBar> especialidades;

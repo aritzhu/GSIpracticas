@@ -14,7 +14,8 @@ import java.util.Date;
 import java.util.List;
 
 
-public class Cliente extends Usuario implements XMLRepresentable{ 
+public class Cliente extends Usuario implements XMLRepresentable, java.io.Serializable{ 
+    private static final long serialVersionUID = 1L;
     private List<Review> reviews;
     private final boolean esCliente = true;
 

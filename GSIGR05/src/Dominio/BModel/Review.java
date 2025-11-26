@@ -15,7 +15,8 @@ import java.util.Date;
  * @author alumno
  */
 
-public class Review implements XMLRepresentable{
+public class Review implements XMLRepresentable, java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     private int valoracion;
     private String comentario;
     private Date fechaVisita;
@@ -111,6 +112,11 @@ public class Review implements XMLRepresentable{
 
     public void setFechaEscritura(Date fechaEscritura) {
         this.fechaEscritura = fechaEscritura;
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" + "valoracion=" + valoracion + ", comentario=" + comentario + ", fechaVisita=" + fechaVisita + ", fechaEscritura=" + fechaEscritura + ", contestacion=" + contestacion + ", autor=" + autor + '}';
     }
     
     

@@ -14,7 +14,8 @@ import java.util.List;
  *
  * @author alumno
  */
-public class Restaurante extends Local implements Reservable, XMLRepresentable{
+public class Restaurante extends Local implements Reservable, XMLRepresentable, java.io.Serializable{
+    private static final long serialVersionUID = 1L;
     private float precioMenu;
     private int capacidadComensales;
     private int capacidadComensalesMesa;

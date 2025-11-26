@@ -42,7 +42,7 @@ public interface AdminGateway extends Remote,LocalFinder{
     * @return True sí y sólo si se pudo completar la tarea
      * @throws RemoteException If some error happens in the remove invocation.
     */
-   public Boolean eliminaReview(Review r) throws RemoteException;
+   public Boolean eliminaReviewRMI(Review r) throws RemoteException;
    
    /**
     * Elimina todas la reviews de un cliente determinado
