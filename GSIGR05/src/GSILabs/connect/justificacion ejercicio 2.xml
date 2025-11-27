@@ -1,16 +1,28 @@
 Informe de modificaciones en BModel para compatibilidad RMI
 
-Durante la implementación del servidor RMI con la clase BusinessServer, se detectó que algunas operaciones de cliente generaban la excepción java.io.NotSerializableException. Esto se debía a que las clases de negocio (Bar, Restaurante, Cliente, Propietario, Review) no implementaban la interfaz Serializable, requisito indispensable para que los objetos puedan ser enviados a través de la red mediante RMI.
+Durante la implementación del servidor RMI con la clase BusinessServer, 
+se detectó que algunas operaciones de cliente generaban la excepción java.io.NotSerializableException. 
+Esto se debía a que las clases de negocio (Bar, Restaurante, Cliente, Propietario, Review) no 
+implementaban la interfaz Serializable, requisito indispensable para que los objetos puedan ser 
+enviados a través de la red mediante RMI.
 
 Cambios realizados:
 
 Se añadió implements Serializable a las clases: Bar, Restaurante, Cliente, Propietario y Review.
 
-Se revisaron las listas y referencias internas de estas clases para asegurarse de que solo contuvieran objetos serializables o, en caso contrario, se marcaron como transient aquellos campos cuya transferencia no era necesaria para la funcionalidad remota.
+Se revisaron las listas y referencias internas de estas clases para asegurarse de que solo 
+contuvieran objetos serializables o, en caso contrario, se marcaron como transient aquellos 
+campos cuya transferencia no era necesaria para la funcionalidad remota.
 
-No se realizaron cambios en la lógica de negocio ni en la estructura de métodos, atributos ni herencias; los cambios fueron exclusivamente para permitir la serialización de objetos.
+No se realizaron cambios en la lógica de negocio ni en la estructura de métodos, atributos ni herencias; 
+los cambios fueron exclusivamente para permitir la serialización de objetos.
 
 Justificación:
-RMI transmite objetos entre la JVM del servidor y la del cliente serializando sus datos. Si una clase no implementa Serializable, no puede ser enviada a través de la red, generando errores en tiempo de ejecución. Al implementar Serializable, los objetos de negocio pueden ser transferidos de manera transparente, cumpliendo con los objetivos del ejercicio: invocar métodos remotos como si fueran locales sin afectar la lógica de la aplicación.
+RMI transmite objetos entre la JVM del servidor y la del cliente serializando sus datos. 
+Si una clase no implementa Serializable, no puede ser enviada a través de la red, generando errores 
+en tiempo de ejecución. Al implementar Serializable, los objetos de negocio pueden ser transferidos 
+de manera transparente, cumpliendo con los objetivos del ejercicio: invocar métodos remotos como si 
+fueran locales sin afectar la lógica de la aplicación.
 
-Con estas modificaciones, el sistema RMI funciona correctamente, permitiendo a los clientes acceder a los objetos Bar, Restaurante y demás entidades de BModel sin errores de serialización.
+Con estas modificaciones, el sistema RMI funciona correctamente, permitiendo a los clientes acceder 
+a los objetos Bar, Restaurante y demás entidades de BModel sin errores de serialización.

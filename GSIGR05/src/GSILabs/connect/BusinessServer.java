@@ -2,6 +2,10 @@ package GSILabs.connect;
 
 import Applicacion.BSystem.PublicBusinessSystem;
 import Dominio.BModel.*;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.rmi.Remote;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -10,11 +14,18 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jopendocument.util.cc.IPredicate;
 
 public class BusinessServer {
-
-    public static void main(String[] args) {
+    
+    public static void main(String[] args) throws UnknownHostException, SocketException {
         try {
+            String serverIP = getRealLocalIPv4();
+            System.setProperty("java.rmi.server.hostname", serverIP);
+            
             PublicBusinessSystem bsystem = new PublicBusinessSystem();
             Propietario p1 = new Propietario("P001", "prop1", "pass1", 40, new Date());
             Propietario p2 = new Propietario("P002", "prop2", "pass2", 35, new Date());
@@ -56,5 +67,26 @@ public class BusinessServer {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+    // Función auxiliar para encontrar la IP de red real
+    public static String getRealLocalIPv4() throws SocketException, UnknownHostException {
+        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+        while (interfaces.hasMoreElements()) {
+            NetworkInterface ni = interfaces.nextElement();
+            if (ni.isLoopback() || !ni.isUp()) continue;
+
+            Enumeration<InetAddress> addresses = ni.getInetAddresses();
+            while (addresses.hasMoreElements()) {
+                InetAddress address = addresses.nextElement();
+                // isSiteLocalAddress() comprueba IPs privadas (10.x.x.x, 192.168.x.x, etc.)
+                // getHostAddress().indexOf(":") == -1 asegura que es IPv4 (no contiene ':')
+                if (address.isSiteLocalAddress() && address.getHostAddress().indexOf(":") == -1) {
+                    return address.getHostAddress();
+                }
+            }
+        }
+        
+        // Si no encuentra una IP local de sitio, devuelve la IP estándar del host local (puede ser 127.0.x.x)
+        return InetAddress.getLocalHost().getHostAddress();
     }
 }
