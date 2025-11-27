@@ -19,7 +19,7 @@ public class AdminHub {
         System.out.print("Puerto del servidor: ");
         int port = Integer.parseInt(sc.nextLine());
 
-        System.out.print("Tag del objeto remoto (AdminGateway): ");
+        System.out.print("Tag del objeto remoto (AdminGateway o ): ");
         String tag = sc.nextLine();
 
         try {
