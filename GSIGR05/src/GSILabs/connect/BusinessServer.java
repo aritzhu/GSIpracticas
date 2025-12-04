@@ -33,18 +33,45 @@ public class BusinessServer {
             dueños1.add(p1);
             List<Propietario> dueños2 = new ArrayList<>();
             dueños2.add(p2);
-           Bar bar1 = new Bar("Bar Central", new Direccion("Bilbao","Bizkaia","Calle Licenciado Poza", 47), dueños1);
-Bar bar2 = new Bar("Bar La Esquina", new Direccion("Pamplona","Navarra","Calle Mayor", 12), dueños2);
-Restaurante r1 = new Restaurante("Restaurante El Faro", new Direccion("Bilbao","Bizkaia","Calle Rodríguez Arias", 5), dueños1);
-Restaurante r2 = new Restaurante("Restaurante La Plaza", new Direccion("Pamplona","Navarra","Calle Estafeta", 10), dueños2);
-Restaurante r3 = new Restaurante("Restaurante Casa Manolo", new Direccion("Bilbao","Bizkaia","Calle Licenciado Poza", 5), dueños1);
+            Bar bar1 = new Bar("Bar Central", new Direccion("Bilbao","Bizkaia","Calle Licenciado Poza", 47), dueños1);
+            Bar bar2 = new Bar("Bar La Esquina", new Direccion("Pamplona","Navarra","Calle Mayor", 12), dueños2);
+            Restaurante r1 = new Restaurante("Restaurante El Faro", new Direccion("Bilbao","Bizkaia","Calle Rodríguez Arias", 5), dueños1);
+            Restaurante r2 = new Restaurante("Restaurante La Plaza", new Direccion("Pamplona","Navarra","Calle Estafeta", 10), dueños2);
+            Restaurante r3 = new Restaurante("Restaurante Casa Manolo", new Direccion("Bilbao","Bizkaia","Calle Licenciado Poza", 5), dueños1);
+            // Pamplona (Navarra)
+            Restaurante r4 = new Restaurante("Restaurante Rodero", new Direccion("Pamplona", "Navarra", "Calle Emilio Arrieta", 3), dueños2);
+            Restaurante r5 = new Restaurante("Asador Olaverri", new Direccion("Pamplona", "Navarra", "Calle Santa Marta", 4), dueños1);
+            Restaurante r6 = new Restaurante("Restaurante Europa", new Direccion("Pamplona", "Navarra", "Calle Espoz y Mina", 11), dueños2);
+            Restaurante r7 = new Restaurante("La Olla", new Direccion("Pamplona", "Navarra", "Avenida Roncesvalles", 2), dueños1);
 
+            // Bilbao (Bizkaia)
+            Restaurante r8 = new Restaurante("Nerua Guggenheim Bilbao", new Direccion("Bilbao", "Bizkaia", "Abandoibarra Etorbidea", 2), dueños2);
+            Restaurante r9 = new Restaurante("Restaurante Kate Zaharra", new Direccion("Bilbao", "Bizkaia", "Camino Zabalbide", 221), dueños1);
+            Restaurante r10 = new Restaurante("Asador Indusi", new Direccion("Bilbao", "Bizkaia", "Calle García Rivero", 7), dueños2);
+
+            // San Sebastián (Gipuzkoa) - Para probar que la ruta viaja entre ciudades
+            Restaurante r11 = new Restaurante("Restaurante Arzak", new Direccion("San Sebastián", "Gipuzkoa", "Avenida Alcalde J. Elosegi", 273), dueños1);
+            Restaurante r12 = new Restaurante("Restaurante Akelarre", new Direccion("San Sebastián", "Gipuzkoa", "Paseo Padre Orkolaga", 56), dueños2);
+
+            // Vitoria (Álava)
+            Restaurante r13 = new Restaurante("Restaurante El Portalón", new Direccion("Vitoria-Gasteiz", "Álava", "Calle Correría", 151), dueños1);
             bsystem.nuevoLocal(bar1);
             bsystem.nuevoLocal(bar2);
             //bsystem.nuevoLocal(bar3);
             bsystem.nuevoLocal(r1);
             bsystem.nuevoLocal(r2);
             bsystem.nuevoLocal(r3);
+            bsystem.nuevoLocal(r4);
+            bsystem.nuevoLocal(r5);
+            bsystem.nuevoLocal(r6);
+            bsystem.nuevoLocal(r7);
+            bsystem.nuevoLocal(r8);
+            bsystem.nuevoLocal(r9);
+            bsystem.nuevoLocal(r10);
+            bsystem.nuevoLocal(r11);
+            bsystem.nuevoLocal(r12);
+            bsystem.nuevoLocal(r13);
+            
             Cliente c1 = new Cliente(new ArrayList<>(), "C001", "usuario1", "pass1", 25, new Date());
             Cliente c2 = new Cliente(new ArrayList<>(), "C002", "usuario2", "pass2", 30, new Date());
             bsystem.nuevoUsuario(c1);
