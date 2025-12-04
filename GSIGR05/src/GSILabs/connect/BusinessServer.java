@@ -33,15 +33,15 @@ public class BusinessServer {
             dueños1.add(p1);
             List<Propietario> dueños2 = new ArrayList<>();
             dueños2.add(p2);
-            Bar bar1 = new Bar("Bar Central", new Direccion("Bilbao", "Bizkaia", "Licenciado Poza", 47), dueños1);
-            Bar bar3 = new Bar("Bar New Horizon", new Direccion("Bilbao", "Bizkaia", "Calle Mayor", 47), dueños1);
-            Bar bar2 = new Bar("Bar La Esquina", new Direccion("Pamplona", "Navarra", "Calle Mayor", 12), dueños2);
-            Restaurante r1 = new Restaurante("Restaurante El Faro", new Direccion("Bilbao", "Bizkaia", "Calle del Puerto", 5), dueños1);
-            Restaurante r2 = new Restaurante("Restaurante La Plaza", new Direccion("Pamplona", "Navarra", "Calle San Juan", 10), dueños2);
-            Restaurante r3 = new Restaurante("Restaurante Casa Manolo", new Direccion("Bilbao", "Bizkaia", "Calle del Pui", 5), dueños1);
+           Bar bar1 = new Bar("Bar Central", new Direccion("Bilbao","Bizkaia","Calle Licenciado Poza", 47), dueños1);
+Bar bar2 = new Bar("Bar La Esquina", new Direccion("Pamplona","Navarra","Calle Mayor", 12), dueños2);
+Restaurante r1 = new Restaurante("Restaurante El Faro", new Direccion("Bilbao","Bizkaia","Calle Rodríguez Arias", 5), dueños1);
+Restaurante r2 = new Restaurante("Restaurante La Plaza", new Direccion("Pamplona","Navarra","Calle Estafeta", 10), dueños2);
+Restaurante r3 = new Restaurante("Restaurante Casa Manolo", new Direccion("Bilbao","Bizkaia","Calle Licenciado Poza", 5), dueños1);
+
             bsystem.nuevoLocal(bar1);
             bsystem.nuevoLocal(bar2);
-            bsystem.nuevoLocal(bar3);
+            //bsystem.nuevoLocal(bar3);
             bsystem.nuevoLocal(r1);
             bsystem.nuevoLocal(r2);
             bsystem.nuevoLocal(r3);
@@ -53,7 +53,7 @@ public class BusinessServer {
             Review rv2 = new Review(3, "Normalito", new Date(), c2);
             bar1.addReview(rv2);
             bar2.addReview(rv2);
-            bar3.addReview(rv1);
+            //bar3.addReview(rv1);
 
             Object stub = UnicastRemoteObject.exportObject(bsystem, 0);
 
