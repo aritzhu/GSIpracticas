@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessSystem>
+    
+    <Propietarios>
+        <Propietario>
+            <Id>p1</Id>
+            <Nick>juanito</Nick>
+            <Contrasenia>1234</Contrasenia>
+            <Edad>45</Edad>
+            <FechaNacimiento>1980-05-22</FechaNacimiento>
+        </Propietario>
+        <Propietario>
+            <Id>p2</Id>
+            <Nick>maria</Nick>
+            <Contrasenia>abcd</Contrasenia>
+            <Edad>38</Edad>
+            <FechaNacimiento>1987-11-10</FechaNacimiento>
+        </Propietario>
+        <Propietario>
+            <Id>p3</Id>
+            <Nick>mikel</Nick>
+            <Contrasenia>pass987</Contrasenia>
+            <Edad>43</Edad>
+            <FechaNacimiento>1982-07-20</FechaNacimiento>
+        </Propietario>
+    </Propietarios>
+
+    <Clientes>
+        <Cliente>
+            <Id>c1</Id>
+            <Nick>pedro</Nick>
+            <Contrasenia>pass</Contrasenia>
+            <Edad>25</Edad>
+            <FechaNacimiento>2000-01-01</FechaNacimiento>
+        </Cliente>
+        <Cliente>
+            <Id>c2</Id>
+            <Nick>iker23</Nick>
+            <Contrasenia>xxyyzz</Contrasenia>
+            <Edad>22</Edad>
+            <FechaNacimiento>2002-02-14</FechaNacimiento>
+        </Cliente>
+        <Cliente>
+            <Id>c3</Id>
+            <Nick>ana</Nick>
+            <Contrasenia>ana123</Contrasenia>
+            <Edad>30</Edad>
+            <FechaNacimiento>1994-03-05</FechaNacimiento>
+        </Cliente>
+    </Clientes>
+
+    <Locales>
+
+        <Bar>
+            <Nombre>Bar Central</Nombre>
+            <PrecioMenu>15.5</PrecioMenu>
+
+            <Especialidad>TAPAS</Especialidad>
+            <Especialidad>VINOS</Especialidad>
+
+            <Direccion>
+                <Localidad>Pamplona</Localidad>
+                <Provincia>Navarra</Provincia>
+                <Calle>Mayor</Calle>
+                <Numero>12</Numero>
+            </Direccion>
+
+            <Propietario>
+                <Id>p1</Id>
+                <Nick>juanito</Nick>
+                <Contrasenia>1234</Contrasenia>
+                <Edad>45</Edad>
+                <FechaNacimiento>1980-05-22</FechaNacimiento>
+            </Propietario>
+
+            <Reviews>
+                <Review>
+                    <Valoracion>5</Valoracion>
+                    <Comentario>Excelente servicio y comida.</Comentario>
+                    <FechaVisita>2024-10-12</FechaVisita>
+                    <FechaEscritura>2024-10-15</FechaEscritura>
+                    <Cliente>
+                        <Id>c1</Id>
+                        <Nick>pedro</Nick>
+                        <Contrasenia>pass</Contrasenia>
+                        <Edad>25</Edad>
+                        <FechaNacimiento>2000-01-01</FechaNacimiento>
+                    </Cliente>
+                    <Contestaciones>
+                        <Contestacion>
+                            <Propietario>
+                                <Id>p1</Id>
+                                <Nick>juanito</Nick>
+                                <Contrasenia>1234</Contrasenia>
+                                <Edad>45</Edad>
+                                <FechaNacimiento>1980-05-22</FechaNacimiento>
+                            </Propietario>
+                            <ContestacionTexto>Muchas gracias por su reseña</ContestacionTexto>
+                            <FechaEscritura>2024-06-10</FechaEscritura>
+                        </Contestacion>
+                    </Contestaciones>
+                </Review>
+                <Review>
+                    <Valoracion>4</Valoracion>
+                    <Comentario>Buena música y ambiente agradable.</Comentario>
+                    <FechaVisita>2024-11-01</FechaVisita>
+                    <FechaEscritura>2024-11-02</FechaEscritura>
+                    <Cliente>
+                        <Id>c3</Id>
+                        <Nick>ana</Nick>
+                        <Contrasenia>ana123</Contrasenia>
+                        <Edad>30</Edad>
+                        <FechaNacimiento>1994-03-05</FechaNacimiento>
+                    </Cliente>
+                </Review>
+            </Reviews>
+
+            <Reservas>
+                <Reserva>
+                    <FechaReserva>2024-11-22</FechaReserva>
+                    <Descuento>10</Descuento>
+                    <Cliente>
+                        <Id>c2</Id>
+                        <Nick>iker23</Nick>
+                        <Contrasenia>xxyyzz</Contrasenia>
+                        <Edad>22</Edad>
+                        <FechaNacimiento>2002-02-14</FechaNacimiento>
+                    </Cliente>
+                </Reserva>
+                <Reserva>
+                    <FechaReserva>2024-11-25</FechaReserva>
+                    <Descuento>0</Descuento>
+                    <Cliente>
+                        <Id>c3</Id>
+                        <Nick>ana</Nick>
+                        <Contrasenia>ana123</Contrasenia>
+                        <Edad>30</Edad>
+                        <FechaNacimiento>1994-03-05</FechaNacimiento>
+                    </Cliente>
+                </Reserva>
+            </Reservas>
+
+        </Bar>
+
+        <Pub>
+            <Nombre>Pub Central</Nombre>
+            <Direccion>
+                <Localidad>Bilbao</Localidad>
+                <Provincia>Bizkaia</Provincia>
+                <Calle>Licenciado Poza</Calle>
+                <Numero>47</Numero>
+            </Direccion>
+            <HoraApertura>18</HoraApertura>
+            <HoraCierre>3</HoraCierre>
+
+            <Propietario>
+                <Id>p1</Id>
+                <Nick>juanito</Nick>
+                <Contrasenia>1234</Contrasenia>
+                <Edad>45</Edad>
+                <FechaNacimiento>1980-05-22</FechaNacimiento>
+            </Propietario>
+
+            <Reviews>
+                <Review>
+                    <Valoracion>4</Valoracion>
+                    <Comentario>Buen ambiente y música en vivo.</Comentario>
+                    <FechaVisita>2024-09-05</FechaVisita>
+                    <FechaEscritura>2024-09-06</FechaEscritura>
+                    <Cliente>
+                        <Id>c1</Id>
+                        <Nick>pedro</Nick>
+                        <Contrasenia>pass</Contrasenia>
+                        <Edad>25</Edad>
+                        <FechaNacimiento>2000-01-01</FechaNacimiento>
+                    </Cliente>
+                </Review>
+            </Reviews>
+
+            <Reservas>
+                <Reserva>
+                    <FechaReserva>2024-12-01</FechaReserva>
+                    <Descuento>0</Descuento>
+                    <Cliente>
+                        <Id>c2</Id>
+                        <Nick>iker23</Nick>
+                        <Contrasenia>xxyyzz</Contrasenia>
+                        <Edad>22</Edad>
+                        <FechaNacimiento>2002-02-14</FechaNacimiento>
+                    </Cliente>
+                </Reserva>
+            </Reservas>
+
+        </Pub>
+
+        <Restaurante>
+            <Nombre>Asador Etxea</Nombre>
+            <Direccion>
+                <Localidad>Vitoria</Localidad>
+                <Provincia>Araba</Provincia>
+                <Calle>Cercas Bajas</Calle>
+                <Numero>12</Numero>
+            </Direccion>
+            <PrecioMenu>28.50</PrecioMenu>
+            <CapacidadComensales>150</CapacidadComensales>
+            <CapacidadComensalesMesa>6</CapacidadComensalesMesa>
+
+            <Propietario>
+                <Id>p3</Id>
+                <Nick>mikel</Nick>
+                <Contrasenia>pass987</Contrasenia>
+                <Edad>43</Edad>
+                <FechaNacimiento>1982-07-20</FechaNacimiento>
+            </Propietario>
+
+            <Reviews>
+                <Review>
+                    <Valoracion>5</Valoracion>
+                    <Comentario>Excelente comida tradicional.</Comentario>
+                    <FechaVisita>2024-08-15</FechaVisita>
+                    <FechaEscritura>2024-08-16</FechaEscritura>
+                    <Cliente>
+                        <Id>c1</Id>
+                        <Nick>pedro</Nick>
+                        <Contrasenia>pass</Contrasenia>
+                        <Edad>25</Edad>
+                        <FechaNacimiento>2000-01-01</FechaNacimiento>
+                    </Cliente>
+                </Review>
+                <Review>
+                    <Valoracion>4</Valoracion>
+                    <Comentario>Servicio amable pero algo lento.</Comentario>
+                    <FechaVisita>2024-10-10</FechaVisita>
+                    <FechaEscritura>2024-10-11</FechaEscritura>
+                    <Cliente>
+                        <Id>c2</Id>
+                        <Nick>iker23</Nick>
+                        <Contrasenia>xxyyzz</Contrasenia>
+                        <Edad>22</Edad>
+                        <FechaNacimiento>2002-02-14</FechaNacimiento>
+                    </Cliente>
+                    <Contestaciones>
+                        <Contestacion>
+                            <Propietario>
+                                <Id>p3</Id>
+                                <Nick>mikel</Nick>
+                                <Contrasenia>pass987</Contrasenia>
+                                <Edad>43</Edad>
+                                <FechaNacimiento>1982-07-20</FechaNacimiento>
+                            </Propietario>
+                            <ContestacionTexto>Gracias por tu comentario, trabajaremos para mejorar la rapidez.</ContestacionTexto>
+                            <FechaEscritura>2024-10-12</FechaEscritura>
+                        </Contestacion>
+                    </Contestaciones>
+                </Review>
+            </Reviews>
+
+            <Reservas>
+                <Reserva>
+                    <FechaReserva>2024-12-05</FechaReserva>
+                    <Descuento>5</Descuento>
+                    <Cliente>
+                        <Id>c2</Id>
+                        <Nick>iker23</Nick>
+                        <Contrasenia>xxyyzz</Contrasenia>
+                        <Edad>22</Edad>
+                        <FechaNacimiento>2002-02-14</FechaNacimiento>
+                    </Cliente>
+                </Reserva>
+                <Reserva>
+                    <FechaReserva>2024-12-07</FechaReserva>
+                    <Descuento>0</Descuento>
+                    <Cliente>
+                        <Id>c3</Id>
+                        <Nick>ana</Nick>
+                        <Contrasenia>ana123</Contrasenia>
+                        <Edad>30</Edad>
+                        <FechaNacimiento>1994-03-05</FechaNacimiento>
+                    </Cliente>
+                </Reserva>
+            </Reservas>
+
+        </Restaurante>
+
+    </Locales>
+
+</BusinessSystem>
