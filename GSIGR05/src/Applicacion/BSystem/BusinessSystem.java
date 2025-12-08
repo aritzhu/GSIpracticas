@@ -285,7 +285,21 @@ public class BusinessSystem implements LeisureOffice, XMLRepresentable {
 
         return resultado.toArray(new Restaurante[0]);
     }
+    Restaurante[] listarRestaurantes(String ciudad) {
+        List<Restaurante> resultado = new ArrayList<>();
 
+        for (Local l : database.getLocales()) {
+            if (l instanceof Restaurante) {
+                boolean ciudadOk = (ciudad == null || ciudad.isEmpty() || l.getDireccion().getLocalidad().equalsIgnoreCase(ciudad));
+
+                if (ciudadOk) {
+                    resultado.add((Restaurante) l);
+                }
+            }
+        }
+
+        return resultado.toArray(new Restaurante[0]);
+    }
 
     @Override
     public Pub[] listarPubs(String ciudad, String provincia) {
@@ -629,6 +643,8 @@ private String indentLines(String text, int level) {
         }
     }
 }
+
+    
 
 
 }

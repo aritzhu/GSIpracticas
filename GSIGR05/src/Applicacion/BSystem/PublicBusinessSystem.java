@@ -8,7 +8,9 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PublicBusinessSystem extends BusinessSystem implements ClientGateway, AdminGateway {
 
@@ -78,10 +80,8 @@ public class PublicBusinessSystem extends BusinessSystem implements ClientGatewa
         Bar mejor = null;
         double mejorPunt = -1;
         for (Local l : super.getDatabase().getLocales()) {
-            if (l instanceof Bar && (ciudad == null || ciudad.isEmpty() || l.getDireccion().getLocalidad().equals(ciudad))) {
-                List<Review> reviews = l.getReviews();
-                double media = reviews != null && !reviews.isEmpty() ?
-                        reviews.stream().mapToInt(Review::getValoracion).average().orElse(0) : 0;
+            if (l instanceof Bar && (ciudad == null || ciudad.isEmpty() || l.getDireccion().getLocalidad().equalsIgnoreCase(ciudad))) {
+                double media = calcularMedia(l);
                 if (media > mejorPunt) {
                     mejor = (Bar) l;
                     mejorPunt = media;
@@ -89,6 +89,44 @@ public class PublicBusinessSystem extends BusinessSystem implements ClientGatewa
             }
         }
         return mejor;
+    }
+
+    @Override
+    public Restaurante mejorRestaurante(String ciudad) throws RemoteException {
+        Restaurante mejor = null;
+        double mejorPunt = -1;
+        for (Local l : super.getDatabase().getLocales()) {
+            if (l instanceof Restaurante && (ciudad == null || ciudad.isEmpty() || l.getDireccion().getLocalidad().equalsIgnoreCase(ciudad))) {
+                double media = calcularMedia(l);
+                if (media > mejorPunt) {
+                    mejor = (Restaurante) l;
+                    mejorPunt = media;
+                }
+            }
+        }
+        return mejor;
+    }
+
+    @Override
+    public Pub mejorPub(String ciudad) throws RemoteException {
+        Pub mejor = null;
+        double mejorPunt = -1;
+        for (Local l : super.getDatabase().getLocales()) {
+            if (l instanceof Pub && (ciudad == null || ciudad.isEmpty() || l.getDireccion().getLocalidad().equalsIgnoreCase(ciudad))) {
+                double media = calcularMedia(l);
+                if (media > mejorPunt) {
+                    mejor = (Pub) l;
+                    mejorPunt = media;
+                }
+            }
+        }
+        return mejor;
+    }
+
+    private double calcularMedia(Local l) {
+        List<Review> reviews = l.getReviews();
+        return reviews != null && !reviews.isEmpty() ?
+                reviews.stream().mapToInt(Review::getValoracion).average().orElse(0) : 0;
     }
 
     @Override
@@ -128,4 +166,36 @@ public class PublicBusinessSystem extends BusinessSystem implements ClientGatewa
         }
         return encontrados.toArray(new Local[0]);
     }
+
+    @Override
+    public Local[] getLocalesEnCiudad(String ciudad) throws RemoteException {
+        if (ciudad == null || ciudad.isEmpty()) return new Local[0];
+        
+        List<Local> encontrados = new ArrayList<>();
+        // Recorremos todos los locales de la base de datos
+        for (Local l : super.getDatabase().getLocales()) {
+            // Comprobamos si la dirección coincide con la ciudad solicitada (ignorando mayúsculas/minúsculas)
+            if (l.getDireccion().getLocalidad().equalsIgnoreCase(ciudad)) {
+                encontrados.add(l);
+            }
+        }
+        return encontrados.toArray(new Local[0]);
+    }
+    // He actualizado esta función para que detecte ciudades de CUALQUIER local, no solo restaurantes
+    @Override
+    public String[] getCiudadesConLocales() throws RemoteException {
+        Set<String> ciudadesUnicas = new HashSet<>();
+        for (Local l : super.getDatabase().getLocales()) { 
+             // Ahora coge ciudades de Bares, Pubs y Restaurantes
+            if (l != null && l.getDireccion() != null) {
+                String ciudad = l.getDireccion().getLocalidad();
+                if (ciudad != null && !ciudad.isEmpty()) {
+                    ciudadesUnicas.add(ciudad);
+                }
+            }
+        }
+        return ciudadesUnicas.toArray(new String[0]);
+    }
+    
+    
 }

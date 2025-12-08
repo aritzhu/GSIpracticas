@@ -1,7 +1,9 @@
 package GSILabs.connect;
 
 import Dominio.BModel.Bar;
+import Dominio.BModel.Pub;
 import Dominio.BModel.Restaurante;
+import Dominio.BModel.Review;
 import Dominio.IBModelo.Local;
 import java.awt.*;
 import java.awt.event.*;
@@ -12,6 +14,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import org.jxmapviewer.JXMapViewer;
@@ -25,95 +28,75 @@ import org.json.JSONObject;
 
 public class AdminClientHub {
 
+    private static Map<String, GeoPosition> localesActuales = new ConcurrentHashMap<>();
+
     public static void main(String[] args) throws InterruptedException {
         Scanner sc = new Scanner(System.in);
 
         System.out.print("Host del servidor: ");
         String host = sc.nextLine();
+        if(host.isEmpty()) host = "127.0.0.1"; 
 
         System.out.print("Puerto del servidor: ");
-        int port = Integer.parseInt(sc.nextLine());
+        String portStr = sc.nextLine();
+        int port = portStr.isEmpty() ? 1099 : Integer.parseInt(portStr);
 
-        System.out.print("Tag del objeto remoto (AdminGateway o ClientGateway): ");
-        String tag = sc.nextLine();
+        // Modificado para que sea más claro para el usuario
+        System.out.print("Tag (C = Client / A = Admin): ");
+        String input = sc.nextLine();
+        // Por defecto será "C" si está vacío
+        if(input.isEmpty()) input = "C"; 
 
-        Map<String, GeoPosition> localesMapa = new LinkedHashMap<>();
-
-        if (tag.equalsIgnoreCase("AdminGateway")) {
-            while (true) {
-                try {
-                    Registry registry = LocateRegistry.getRegistry(host, port);
-                    AdminGateway gateway = (AdminGateway) registry.lookup(tag);
-                    LocalFinder finder = (LocalFinder) gateway;
-                    Local[] locales = finder.getLocals("");
-
-                    if (locales != null && locales.length > 0) {
-                        for (Local l : locales) {
-                            GeoPosition pos = geocodificar(
-                                    l.getDireccion().getLocalidad(),
-                                    l.getDireccion().getProvincia(),
-                                    l.getDireccion().getCalle(),
-                                    String.valueOf(l.getDireccion().getNumero())
-                            );
-                            if (pos != null) localesMapa.put(l.getNombre(), pos);
-                        }
-                    }
-                    break;
-                } catch (Exception e) {
-                    System.err.println("Error conectando con el servidor RMI. Reintentando...");
-                    Thread.sleep(2000);
+        try {
+            Registry registry = LocateRegistry.getRegistry(host, port);
+            
+            // Lógica corregida: Acepta "C" pero busca "ClientGateway"
+            if (input.equalsIgnoreCase("C") || input.equalsIgnoreCase("ClientGateway")) {
+                
+                // IMPORTANTE: Aquí buscamos el nombre REAL registrado en el servidor
+                ClientGateway gateway = (ClientGateway) registry.lookup("ClientGateway");
+                
+                // 1. Obtenemos la lista de ciudades disponibles
+                String[] ciudades = gateway.getCiudadesConLocales();
+                
+                if (ciudades == null || ciudades.length == 0) {
+                    System.out.println("No hay datos de ciudades en el servidor.");
+                    return;
                 }
-            }
-        } else if (tag.equalsIgnoreCase("ClientGateway")) {
-            while (true) {
-                try {
-                    Registry registry = LocateRegistry.getRegistry(host, port);
-                    ClientGateway gateway = (ClientGateway) registry.lookup(tag);
+                // 2. Lanzamos la GUI
+                SwingUtilities.invokeLater(() -> crearGuiDinamica(gateway, ciudades));
 
-                    Bar mejor = gateway.mejorBar("Bilbao");
-                    if (mejor != null) {
-                        GeoPosition pos = geocodificar(
-                                mejor.getDireccion().getLocalidad(),
-                                mejor.getDireccion().getProvincia(),
-                                mejor.getDireccion().getCalle(),
-                                String.valueOf(mejor.getDireccion().getNumero())
-                        );
-                        if (pos != null) localesMapa.put(mejor.getNombre(), pos);
+            } else if (input.equalsIgnoreCase("A") || input.equalsIgnoreCase("AdminGateway")) {
+                
+                // Lógica corregida: Acepta "A" pero busca "AdminGateway"
+                AdminGateway gateway = (AdminGateway) registry.lookup("AdminGateway");
+                
+                LocalFinder finder = (LocalFinder) gateway;
+                Local[] locales = finder.getLocals(""); 
+                if (locales != null) {
+                    for (Local l : locales) {
+                        GeoPosition pos = geocodificar(l);
+                        if (pos != null) localesActuales.put(l.getNombre(), pos);
                     }
-
-                    Restaurante[] top = gateway.mejoresRestaurantes("Bilbao", 5);
-                    for (Restaurante r : top) {
-                        if (r != null) {
-                            GeoPosition pos = geocodificar(
-                                    r.getDireccion().getLocalidad(),
-                                    r.getDireccion().getProvincia(),
-                                    r.getDireccion().getCalle(),
-                                    String.valueOf(r.getDireccion().getNumero())
-                            );
-                            if (pos != null) localesMapa.put(r.getNombre(), pos);
-                        }
-                    }
-                    break;
-                } catch (Exception e) {
-                    System.err.println("Error conectando con el servidor RMI. Reintentando...");
-                    Thread.sleep(2000);
                 }
+                SwingUtilities.invokeLater(() -> crearGuiDinamica(null, null)); 
+            } else {
+                System.out.println("Opción no válida. Usa 'C' o 'A'.");
             }
-        } else {
-            System.out.println("Tag erróneo");
-            System.exit(0);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        SwingUtilities.invokeLater(() -> crearMapa(localesMapa));
     }
+    
 
-    private static void crearMapa(Map<String, GeoPosition> locales) {
-        JFrame frame = new JFrame("Mapa de locales (Ruta Real)");
-        frame.setSize(1000, 600);
+    private static void crearGuiDinamica(ClientGateway gateway, String[] ciudadesDisponibles) {
+        JFrame frame = new JFrame("Mapa de Locales Interactivo");
+        frame.setSize(1250, 750);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
-        // --- 1. CONFIGURACIÓN DEL MAPA ---
+        // --- MAPA ---
+        JXMapViewer mapViewer = new JXMapViewer();
         TileFactoryInfo info = new TileFactoryInfo(0, 19, 19, 256, true, true,
                 "https://tile.openstreetmap.org", "x", "y", "z") {
             @Override
@@ -122,326 +105,312 @@ public class AdminClientHub {
                 return baseURL + "/" + invZoom + "/" + x + "/" + y + ".png";
             }
         };
-        DefaultTileFactory tileFactory = new DefaultTileFactory(info);
-        JXMapViewer mapViewer = new JXMapViewer();
-        mapViewer.setTileFactory(tileFactory);
+        mapViewer.setTileFactory(new DefaultTileFactory(info));
+        mapViewer.setZoom(7);
 
-        // --- 2. WAYPOINTS (PINES) INICIALES ---
-        Set<Waypoint> waypoints = new HashSet<>();
-        for (GeoPosition pos : locales.values()) {
-            waypoints.add(new DefaultWaypoint(pos));
+        // --- PANELES ---
+        JPanel panelTop = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panelTop.setBackground(new Color(50, 50, 50));
+        
+        // CONTROLES
+        JComboBox<String> comboCiudades = new JComboBox<>();
+        if (ciudadesDisponibles != null) {
+            for (String c : ciudadesDisponibles) comboCiudades.addItem(c);
         }
         
-        WaypointPainter<Waypoint> waypointPainter = new WaypointPainter<>();
-        waypointPainter.setWaypoints(waypoints);
-        mapViewer.setOverlayPainter(waypointPainter);
-
-        // --- 3. PANEL SUPERIOR ---
-        JPanel panelTop = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelTop.setBackground(new Color(0, 0, 0, 120));
-        panelTop.setOpaque(true);
-
-        // Combo de locales
-        JComboBox<String> comboLocales = new JComboBox<>(locales.keySet().toArray(new String[0]));
-        comboLocales.setPreferredSize(new Dimension(200, 30));
+        JLabel lblCiudad = new JLabel(" Ciudad:");
+        lblCiudad.setForeground(Color.WHITE);
         
-        JLabel lblSel = new JLabel("Centrar en:");
-        lblSel.setForeground(Color.WHITE);
-        panelTop.add(lblSel);
-        panelTop.add(comboLocales);
+        JComboBox<String> comboLocales = new JComboBox<>();
+        comboLocales.setPreferredSize(new Dimension(200, 25));
+        
+        JLabel lblLocal = new JLabel(" Ir a:");
+        lblLocal.setForeground(Color.WHITE);
 
+        JButton btnRuta = new JButton("Ruta");
+        btnRuta.setBackground(Color.ORANGE);
+
+        // --- NUEVOS BOTONES "MEJOR DE..." ---
+        JButton btnBestBar = new JButton("Mejor Bar");
+        btnBestBar.setBackground(new Color(173, 216, 230)); // Azul claro
+        
+        JButton btnBestRest = new JButton("Mejor Rest.");
+        btnBestRest.setBackground(new Color(144, 238, 144)); // Verde claro
+        
+        JButton btnBestPub = new JButton("Mejor Pub");
+        btnBestPub.setBackground(new Color(255, 182, 193)); // Rosa claro
+
+        // --- AÑADIR ---
+        if (gateway != null) {
+            panelTop.add(lblCiudad);
+            panelTop.add(comboCiudades);
+        }
+        panelTop.add(lblLocal);
+        panelTop.add(comboLocales);
+        panelTop.add(Box.createHorizontalStrut(10));
+        
+        // Añadir botones de "Mejores"
+        panelTop.add(btnBestBar);
+        panelTop.add(btnBestRest);
+        panelTop.add(btnBestPub);
+        
+        panelTop.add(Box.createHorizontalStrut(10));
+        panelTop.add(btnRuta);
+
+        // --- EVENTOS ---
+        
+        ActionListener actionCargarCiudad = e -> {
+            String ciudadSel = (String) comboCiudades.getSelectedItem();
+            if (ciudadSel == null || gateway == null) return;
+            comboCiudades.setEnabled(false);
+            frame.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            
+            new Thread(() -> {
+                try {
+                    System.out.println("Descargando TODOS los datos de " + ciudadSel + "...");
+                    localesActuales.clear(); 
+                    Local[] todos = gateway.getLocalesEnCiudad(ciudadSel);
+                    
+                    if (todos != null) {
+                        for (Local l : todos) {
+                            GeoPosition pos = geocodificar(l);
+                            if (pos != null) {
+                                String prefijo = "[?]";
+                                if (l instanceof Pub) prefijo = "[PUB] ";
+                                else if (l instanceof Bar) prefijo = "[BAR] ";
+                                else if (l instanceof Restaurante) prefijo = "[REST] ";
+                                
+                                localesActuales.put(prefijo + l.getNombre(), pos);
+                            }
+                        }
+                    }
+                    SwingUtilities.invokeLater(() -> {
+                        comboLocales.removeAllItems();
+                        for (String nombre : localesActuales.keySet()) comboLocales.addItem(nombre);
+                        
+                        Set<Waypoint> waypoints = new HashSet<>();
+                        for (GeoPosition p : localesActuales.values()) waypoints.add(new DefaultWaypoint(p));
+                        WaypointPainter<Waypoint> wp = new WaypointPainter<>();
+                        wp.setWaypoints(waypoints);
+                        mapViewer.setOverlayPainter(wp);
+                        
+                        if (localesActuales.size() >= 2) {
+                            mapViewer.zoomToBestFit(new HashSet<>(localesActuales.values()), 0.7);
+                        } else if (localesActuales.size() == 1) {
+                            GeoPosition unico = localesActuales.values().iterator().next();
+                            mapViewer.setAddressLocation(unico);
+                            mapViewer.setZoom(4);
+                        }
+                        
+                        comboCiudades.setEnabled(true);
+                        frame.setCursor(Cursor.getDefaultCursor());
+                    });
+                } catch (Exception ex) { ex.printStackTrace(); }
+            }).start();
+        };
+
+        if (gateway != null) {
+            comboCiudades.addActionListener(actionCargarCiudad);
+            if (comboCiudades.getItemCount() > 0) comboCiudades.setSelectedIndex(0);
+        }
+
+        // --- LÓGICA DE BOTONES MEJORES ---
+        // Helper para buscar y centrar
+        ActionListener actionMejor = (ActionEvent evt) -> {
+        if (gateway == null) return;
+        String ciudad = (String) comboCiudades.getSelectedItem();
+        JButton source = (JButton) evt.getSource();
+
+        new Thread(() -> {
+            try {
+                Local mejor = null;
+                String tipoTemp = ""; // Usamos variables temporales para la lógica
+                String prefijoTemp = "";
+
+                if (source == btnBestBar) {
+                    mejor = gateway.mejorBar(ciudad);
+                    tipoTemp = "Bar";
+                    prefijoTemp = "[BAR] ";
+                } else if (source == btnBestRest) {
+                    mejor = gateway.mejorRestaurante(ciudad);
+                    tipoTemp = "Restaurante";
+                    prefijoTemp = "[REST] ";
+                } else if (source == btnBestPub) {
+                    mejor = gateway.mejorPub(ciudad);
+                    tipoTemp = "Pub";
+                    prefijoTemp = "[PUB] ";
+                }
+
+                // --- AQUÍ ESTÁ EL TRUCO ---
+                // Creamos variables finales (o efectivamente finales) para pasarlas a la Lambda
+                Local finalMejor = mejor;
+                String finalTipo = tipoTemp;     // Copia final de tipo
+                String finalPrefijo = prefijoTemp; // Copia final de prefijo
+
+                if (finalMejor != null) {
+                    String nombreKey = finalPrefijo + finalMejor.getNombre();
+
+                    SwingUtilities.invokeLater(() -> {
+                        if (localesActuales.containsKey(nombreKey)) {
+                            GeoPosition pos = localesActuales.get(nombreKey);
+                            mapViewer.setAddressLocation(pos);
+                            mapViewer.setZoom(3);
+                            comboLocales.setSelectedItem(nombreKey);
+
+                            // AHORA USAMOS finalTipo EN LUGAR DE tipo
+                            JOptionPane.showMessageDialog(frame, 
+                                "El mejor " + finalTipo + " es:\n" + finalMejor.getNombre() + "\n(Centrado en mapa)");
+                        } else {
+                            JOptionPane.showMessageDialog(frame, "Se encontró " + finalMejor.getNombre() + " pero no está geocodificado.");
+                        }
+                    });
+                } else {
+                    // AQUÍ TAMBIÉN USAMOS finalTipo
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(frame, "No se encontró ningún " + finalTipo + " en esta ciudad."));
+                }
+            } catch (Exception ex) { ex.printStackTrace(); }
+        }).start();
+    };
+
+        btnBestBar.addActionListener(actionMejor);
+        btnBestRest.addActionListener(actionMejor);
+        btnBestPub.addActionListener(actionMejor);
+
+        // --- RESTO DE EVENTOS (Zoom, Ruta, etc) ---
         comboLocales.addActionListener(e -> {
-            String seleccionado = (String) comboLocales.getSelectedItem();
-            if (seleccionado != null) {
-                mapViewer.setAddressLocation(locales.get(seleccionado));
+            String sel = (String) comboLocales.getSelectedItem();
+            if (sel != null && localesActuales.containsKey(sel)) {
+                mapViewer.setAddressLocation(localesActuales.get(sel));
+                if(mapViewer.getZoom() > 4) mapViewer.setZoom(4);
             }
         });
 
-        // --- 4. BOTÓN DE RUTA REAL ---
-        JButton btnRuta = new JButton("Crear Ruta Real (OSRM)");
-        btnRuta.setBackground(Color.ORANGE);
-        
         btnRuta.addActionListener(e -> {
-            // A) Selección de locales
-            String[] nombres = locales.keySet().toArray(new String[0]);
+            if (localesActuales.size() < 2) {
+                JOptionPane.showMessageDialog(frame, "Faltan locales."); return;
+            }
+            String[] nombres = localesActuales.keySet().toArray(new String[0]);
             JList<String> listSelector = new JList<>(nombres);
             listSelector.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-            
-            int result = JOptionPane.showConfirmDialog(
-                frame, 
-                new JScrollPane(listSelector), 
-                "Selecciona los locales (Ctrl+Click)", 
-                JOptionPane.OK_CANCEL_OPTION
-            );
-
-            if (result == JOptionPane.OK_OPTION) {
+            if (JOptionPane.showConfirmDialog(frame, new JScrollPane(listSelector), "Ruta (Ctrl+Click)", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
                 List<String> seleccionados = listSelector.getSelectedValuesList();
-
-                if (seleccionados.size() < 2) {
-                    JOptionPane.showMessageDialog(frame, "Selecciona al menos 2 locales.");
-                    return;
-                }
-
-                // Deshabilitar botón mientras carga
-                btnRuta.setEnabled(false);
-                btnRuta.setText("Calculando ruta...");
-
-                // B) Obtener puntos y ordenar por vecino más cercano
-                List<GeoPosition> puntosSeleccionados = new ArrayList<>();
-                for (String nombre : seleccionados) {
-                    puntosSeleccionados.add(locales.get(nombre));
-                }
-
-                GeoPosition inicio = puntosSeleccionados.get(0);
-                List<GeoPosition> paradasOrdenadas = calcularRutaVecinoMasCercano(inicio, puntosSeleccionados);
-
-                // C) Ejecutar cálculo de ruta OSRM en un hilo separado (para no congelar la GUI)
+                if (seleccionados.size() < 2) return;
+                
                 new Thread(() -> {
-                    List<GeoPosition> rutaRealCompleta = new ArrayList<>();
-                    
+                    List<GeoPosition> puntos = new ArrayList<>();
+                    for(String s : seleccionados) puntos.add(localesActuales.get(s));
+                    List<GeoPosition> ordenados = calcularRutaVecinoMasCercano(puntos.get(0), puntos);
+                    List<GeoPosition> trazado = new ArrayList<>();
                     try {
-                        // Iterar entre pares de puntos (A->B, B->C...)
-                        for (int i = 0; i < paradasOrdenadas.size() - 1; i++) {
-                            GeoPosition p1 = paradasOrdenadas.get(i);
-                            GeoPosition p2 = paradasOrdenadas.get(i + 1);
-                            
-                            // Llamada a la API de OSRM
-                            List<GeoPosition> segmento = obtenerRutaOSRM(p1, p2);
-                            rutaRealCompleta.addAll(segmento);
-                            
-                            // Pequeña pausa para respetar límites de la API pública
-                            Thread.sleep(250);
+                        for(int i=0; i<ordenados.size()-1; i++) {
+                            trazado.addAll(obtenerRutaOSRM(ordenados.get(i), ordenados.get(i+1)));
+                            Thread.sleep(100); 
                         }
-
-                        // D) Actualizar el mapa en el hilo de Swing
-                        SwingUtilities.invokeLater(() -> {
-                            // Pintor de ruta (Línea roja siguiendo calles)
-                            RoutePainter routePainter = new RoutePainter(rutaRealCompleta);
-                            
-                            // Pintor de Waypoints (Solo los seleccionados en la ruta)
-                            Set<Waypoint> routeWaypoints = new HashSet<>();
-                            for(GeoPosition p : paradasOrdenadas) {
-                                routeWaypoints.add(new DefaultWaypoint(p));
-                            }
-                            WaypointPainter<Waypoint> wp = new WaypointPainter<>();
-                            wp.setWaypoints(routeWaypoints);
-
-                            // Combinar pintores
-                            List<Painter<JXMapViewer>> painters = new ArrayList<>();
-                            painters.add(routePainter); // Primero la línea
-                            painters.add(wp);           // Encima los pines
-                            
-                            CompoundPainter<JXMapViewer> compoundPainter = new CompoundPainter<>(painters);
-                            mapViewer.setOverlayPainter(compoundPainter);
-                            
-                            // Zoom automático
-                            mapViewer.zoomToBestFit(new HashSet<>(paradasOrdenadas), 0.7);
-                            
-                            // Restaurar botón
-                            btnRuta.setText("Crear Ruta Real (OSRM)");
-                            btnRuta.setEnabled(true);
-                        });
-
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        SwingUtilities.invokeLater(() -> {
-                            JOptionPane.showMessageDialog(frame, "Error calculando la ruta: " + ex.getMessage());
-                            btnRuta.setText("Crear Ruta Real (OSRM)");
-                            btnRuta.setEnabled(true);
-                        });
-                    }
+                    } catch(Exception ex) {}
+                    SwingUtilities.invokeLater(() -> {
+                        RoutePainter rp = new RoutePainter(trazado);
+                        Set<Waypoint> wps = new HashSet<>();
+                        for(GeoPosition p : ordenados) wps.add(new DefaultWaypoint(p));
+                        WaypointPainter<Waypoint> wp = new WaypointPainter<>();
+                        wp.setWaypoints(wps);
+                        mapViewer.setOverlayPainter(new CompoundPainter<>(Arrays.asList(rp, wp)));
+                        mapViewer.zoomToBestFit(new HashSet<>(ordenados), 0.7);
+                    });
                 }).start();
             }
         });
         
-        panelTop.add(btnRuta);
-
-        // --- 5. CONTROLES DE ZOOM ---
-        JButton btnZoomIn = new JButton("+");
-        JButton btnZoomOut = new JButton("-");
-
-        btnZoomIn.addActionListener(e -> {
-            int zoom = mapViewer.getZoom();
-            if (zoom > 0) mapViewer.setZoom(zoom - 1);
-        });
-
-        btnZoomOut.addActionListener(e -> {
-            int zoom = mapViewer.getZoom();
-            if (zoom < mapViewer.getTileFactory().getInfo().getMaximumZoomLevel())
-                mapViewer.setZoom(zoom + 1);
-        });
-
-        panelTop.add(btnZoomIn);
-        panelTop.add(btnZoomOut);
-
-        frame.add(panelTop, BorderLayout.NORTH);
-        frame.add(mapViewer, BorderLayout.CENTER);
-
-        // --- 6. LISTENER DE RATÓN ---
         MouseInputListener mia = new PanMouseInputListener(mapViewer);
         mapViewer.addMouseListener(mia);
         mapViewer.addMouseMotionListener(mia);
         mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCenter(mapViewer));
 
+        frame.add(panelTop, BorderLayout.NORTH);
+        frame.add(mapViewer, BorderLayout.CENTER);
         frame.setVisible(true);
-
-        if (!locales.isEmpty()) {
-            String primero = locales.keySet().iterator().next();
-            mapViewer.setAddressLocation(locales.get(primero));
-            mapViewer.setZoom(5);
-        }
     }
 
-    // --- NUEVO MÉTODO: Conexión a OSRM para obtener coordenadas de calles ---
-    private static List<GeoPosition> obtenerRutaOSRM(GeoPosition inicio, GeoPosition fin) {
-        List<GeoPosition> rutaSegmento = new ArrayList<>();
-        try {
-            // Locale.US es IMPORTANTE para que use puntos en decimales (lat 40.5 en vez de 40,5)
-            String urlStr = String.format(Locale.US, 
-                    "http://router.project-osrm.org/route/v1/driving/%f,%f;%f,%f?overview=full&geometries=geojson",
-                    inicio.getLongitude(), inicio.getLatitude(),
-                    fin.getLongitude(), fin.getLatitude());
-
-            URL url = new URL(urlStr);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("User-Agent", "JavaMapApp/1.0"); // Identificación básica
-
-            if (conn.getResponseCode() != 200) {
-                System.err.println("Error HTTP OSRM: " + conn.getResponseCode());
-                return rutaSegmento;
-            }
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null) response.append(line);
-            in.close();
-
-            // Parsing JSON
-            JSONObject json = new JSONObject(response.toString());
-            JSONArray routes = json.getJSONArray("routes");
-            
-            if (routes.length() > 0) {
-                // "geometry" contiene el array de puntos del trazado
-                JSONObject geometry = routes.getJSONObject(0).getJSONObject("geometry");
-                JSONArray coordinates = geometry.getJSONArray("coordinates");
-
-                for (int i = 0; i < coordinates.length(); i++) {
-                    JSONArray coord = coordinates.getJSONArray(i);
-                    // OSRM devuelve [lon, lat], Java espera (lat, lon)
-                    double lon = coord.getDouble(0);
-                    double lat = coord.getDouble(1);
-                    rutaSegmento.add(new GeoPosition(lat, lon));
-                }
-            }
-
-        } catch (Exception e) {
-            System.err.println("Error obteniendo ruta OSRM");
-            e.printStackTrace();
-        }
-        return rutaSegmento;
+    // --- UTILIDADES (Geocodificar, Ruta, etc. se mantienen igual) ---
+    private static GeoPosition geocodificar(Local l) {
+        return geocodificar(l.getDireccion().getLocalidad(), l.getDireccion().getProvincia(), l.getDireccion().getCalle(), String.valueOf(l.getDireccion().getNumero()));
     }
-
-    // --- Geocodificación (Nominatim) ---
     private static GeoPosition geocodificar(String ciudad, String provincia, String calle, String numero) {
         try {
+            Thread.sleep(800); 
             String direccion = URLEncoder.encode(calle + " " + numero + ", " + ciudad + ", " + provincia, "UTF-8");
             String urlStr = "https://nominatim.openstreetmap.org/search?q=" + direccion + "&format=json&limit=1";
-            URL url = new URL(urlStr);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("User-Agent", "JavaGeocoder");
-
+            HttpURLConnection conn = (HttpURLConnection) new URL(urlStr).openConnection();
+            conn.setRequestProperty("User-Agent", "JavaMapApp_StudentProject_1.0"); 
+            if(conn.getResponseCode() != 200) return null;
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder response = new StringBuilder();
             String line;
             while ((line = in.readLine()) != null) response.append(line);
             in.close();
-
             JSONArray resultados = new JSONArray(response.toString());
             if (resultados.length() > 0) {
                 JSONObject obj = resultados.getJSONObject(0);
-                double lat = obj.getDouble("lat");
-                double lon = obj.getDouble("lon");
-                return new GeoPosition(lat, lon);
+                return new GeoPosition(obj.getDouble("lat"), obj.getDouble("lon"));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {}
         return null;
     }
-    
-    // --- Algoritmo Vecino más cercano (Orden lógico de visita) ---
+    // Métodos OSRM y Helper se omiten para ahorrar espacio (copialos de la versión anterior si los necesitas, son idénticos)
+    private static List<GeoPosition> obtenerRutaOSRM(GeoPosition inicio, GeoPosition fin) {
+        List<GeoPosition> rutaSegmento = new ArrayList<>();
+        try {
+            String urlStr = String.format(Locale.US, "http://router.project-osrm.org/route/v1/driving/%f,%f;%f,%f?overview=full&geometries=geojson", inicio.getLongitude(), inicio.getLatitude(), fin.getLongitude(), fin.getLatitude());
+            HttpURLConnection conn = (HttpURLConnection) new URL(urlStr).openConnection();
+            if (conn.getResponseCode() == 200) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = in.readLine()) != null) response.append(line);
+                JSONObject json = new JSONObject(response.toString());
+                JSONArray routes = json.getJSONArray("routes");
+                if (routes.length() > 0) {
+                    JSONArray coordinates = routes.getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates");
+                    for (int i = 0; i < coordinates.length(); i++) {
+                        JSONArray coord = coordinates.getJSONArray(i);
+                        rutaSegmento.add(new GeoPosition(coord.getDouble(1), coord.getDouble(0)));
+                    }
+                }
+            }
+        } catch (Exception e) {}
+        return rutaSegmento;
+    }
     private static List<GeoPosition> calcularRutaVecinoMasCercano(GeoPosition inicio, List<GeoPosition> destinos) {
         List<GeoPosition> ruta = new ArrayList<>();
         List<GeoPosition> pendientes = new ArrayList<>(destinos);
-        
-        // Aseguramos que inicio esté en la lista y sea el primero
         if(!pendientes.contains(inicio)) pendientes.add(inicio);
-        
-        // Empezamos por el inicio y lo quitamos de pendientes
-        ruta.add(inicio);
-        pendientes.remove(inicio);
-        
+        ruta.add(inicio); pendientes.remove(inicio);
         GeoPosition actual = inicio;
-        
         while (!pendientes.isEmpty()) {
-            GeoPosition masCercano = null;
-            double distMinima = Double.MAX_VALUE;
-            
-            for (GeoPosition candidato : pendientes) {
-                double dist = getDistancia(actual, candidato);
-                if (dist < distMinima) {
-                    distMinima = dist;
-                    masCercano = candidato;
-                }
+            GeoPosition masCercano = null; double distMin = Double.MAX_VALUE;
+            for (GeoPosition c : pendientes) {
+                double d = Math.sqrt(Math.pow(actual.getLatitude()-c.getLatitude(),2) + Math.pow(actual.getLongitude()-c.getLongitude(),2));
+                if (d < distMin) { distMin = d; masCercano = c; }
             }
-            
-            ruta.add(masCercano);
-            pendientes.remove(masCercano);
-            actual = masCercano;
+            ruta.add(masCercano); pendientes.remove(masCercano); actual = masCercano;
         }
         return ruta;
     }
-    
-    // Distancia simple para calcular el orden
-    private static double getDistancia(GeoPosition a, GeoPosition b) {
-        double lat = a.getLatitude() - b.getLatitude();
-        double lon = a.getLongitude() - b.getLongitude();
-        return Math.sqrt(lat*lat + lon*lon);
-    }
-
-    // --- Pintor de rutas (Línea roja) ---
     public static class RoutePainter implements Painter<JXMapViewer> {
         private final List<GeoPosition> track;
-
-        public RoutePainter(List<GeoPosition> track) {
-            this.track = track;
-        }
-
+        public RoutePainter(List<GeoPosition> track) { this.track = track; }
         @Override
         public void paint(Graphics2D g, JXMapViewer map, int w, int h) {
             g = (Graphics2D) g.create();
-            
             Rectangle rect = map.getViewportBounds();
             g.translate(-rect.x, -rect.y);
-
-            g.setColor(new Color(255, 0, 0, 200)); // Rojo semi-transparente
-            g.setStroke(new BasicStroke(5));       // Grosor 5
+            g.setColor(new Color(255, 0, 0, 200));
+            g.setStroke(new BasicStroke(5));
             g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            int lastX = -1;
-            int lastY = -1;
-
+            int lastX = -1, lastY = -1;
             for (GeoPosition gp : track) {
                 Point2D pt = map.getTileFactory().geoToPixel(gp, map.getZoom());
-
-                if (lastX != -1 && lastY != -1) {
-                    g.drawLine(lastX, lastY, (int) pt.getX(), (int) pt.getY());
-                }
-
-                lastX = (int) pt.getX();
-                lastY = (int) pt.getY();
+                if (lastX != -1) g.drawLine(lastX, lastY, (int) pt.getX(), (int) pt.getY());
+                lastX = (int) pt.getX(); lastY = (int) pt.getY();
             }
             g.dispose();
         }
