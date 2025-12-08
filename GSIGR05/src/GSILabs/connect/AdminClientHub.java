@@ -1,6 +1,7 @@
 package GSILabs.connect;
 
 import Dominio.BModel.Bar;
+import Dominio.BModel.Cliente;
 import Dominio.BModel.Pub;
 import Dominio.BModel.Restaurante;
 import Dominio.BModel.Review;
@@ -90,6 +91,7 @@ public class AdminClientHub {
     
 
     private static void crearGuiDinamica(ClientGateway gateway, String[] ciudadesDisponibles) {
+        Cliente clienteGui = new Cliente(new ArrayList<>(), "GUI_USER", "UsuarioApp", "1234", 18, new Date());
         JFrame frame = new JFrame("Mapa de Locales Interactivo");
         frame.setSize(1250, 750);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -275,6 +277,168 @@ public class AdminClientHub {
         btnBestBar.addActionListener(actionMejor);
         btnBestRest.addActionListener(actionMejor);
         btnBestPub.addActionListener(actionMejor);
+        
+
+        // --- BOTÓN NUEVA RESEÑA ---
+        JButton btnAddReview = new JButton("Nueva Reseña");
+        btnAddReview.setBackground(Color.CYAN);
+        panelTop.add(Box.createHorizontalStrut(10));
+        panelTop.add(btnAddReview);
+
+        // --- LÓGICA DEL BOTÓN MEJORADA ---
+        btnAddReview.addActionListener(e -> {
+            String seleccionRaw = (String) comboLocales.getSelectedItem();
+            
+            // 1. Validar selección
+            if (seleccionRaw == null) {
+                JOptionPane.showMessageDialog(frame, "Por favor, selecciona un local en la lista 'Ir a:'.");
+                return;
+            }
+            // 2. Limpiar el nombre para mostrarlo bonito (Quitamos [BAR], [PUB]...)
+            String nombreVisual = seleccionRaw;
+            if (seleccionRaw.contains("] ")) {
+                nombreVisual = seleccionRaw.substring(seleccionRaw.indexOf("] ") + 2);
+            }
+            // 3. Crear el panel con diseño BorderLayout para poner título arriba
+            JPanel panelForm = new JPanel(new BorderLayout(10, 10));
+            panelForm.setPreferredSize(new Dimension(350, 200)); // Hacemos la ventana un poco más ancha
+            // --- CABECERA: NOMBRE DEL LOCAL ---
+            JLabel lblTitulo = new JLabel("<html>Reseña para:<br/><b><font size='5' color='blue'>" + nombreVisual + "</font></b></html>");
+            lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+            lblTitulo.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5)); // Margen
+            panelForm.add(lblTitulo, BorderLayout.NORTH);
+            // --- CUERPO: INPUTS ---
+            JPanel panelInputs = new JPanel(new GridLayout(0, 1, 5, 5)); // Grid para los campos
+            // Selector de nota
+            JComboBox<Integer> comboNota = new JComboBox<>(new Integer[]{5, 4, 3, 2, 1});
+            JPanel pNota = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            pNota.add(new JLabel("Puntuación: "));
+            pNota.add(comboNota);
+            panelInputs.add(pNota);
+            // Tex comentario
+            panelInputs.add(new JLabel("Tu opinión:"));
+            JTextArea textComentario = new JTextArea(4, 20);
+            textComentario.setLineWrap(true);
+            textComentario.setWrapStyleWord(true);
+            JScrollPane scrollComment = new JScrollPane(textComentario);
+            panelInputs.add(scrollComment);
+
+            panelForm.add(panelInputs, BorderLayout.CENTER);
+
+            // 4. Mostrar el diálogo
+            int result = JOptionPane.showConfirmDialog(frame, panelForm, 
+                    "Escribir Reseña", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                String comentario = textComentario.getText();
+                int nota = (Integer) comboNota.getSelectedItem();
+
+                if (comentario.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "El comentario no puede estar vacío.");
+                    return;
+                }
+
+                // Guardamos el nombre limpio para usarlo en el hilo (variable efectivamente final)
+                final String nombreParaServer = nombreVisual; 
+
+                // 5. Enviar al servidor
+                new Thread(() -> {
+                    try {
+                        // Cliente temporal (GUI)
+                        
+                        Review nuevaReview = new Review(nota, comentario, new Date(), clienteGui);
+
+                        boolean exito = gateway.publicarReview(nombreParaServer, nuevaReview);
+
+                        SwingUtilities.invokeLater(() -> {
+                            if (exito) {
+                                JOptionPane.showMessageDialog(frame, "¡Reseña publicada para " + nombreParaServer + "!");
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "Error: No se pudo guardar la reseña.");
+                            }
+                        });
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }).start();
+            }
+        });
+        // --- BOTÓN BORRAR RESEÑA ---
+        JButton btnDelReview = new JButton("Borrar Reseña");
+        btnDelReview.setBackground(Color.PINK); // Color rojo/rosa para indicar peligro/borrar
+        panelTop.add(btnDelReview);
+
+        // --- LÓGICA BOTÓN BORRAR ---
+        btnDelReview.addActionListener(e -> {
+            String seleccionRaw = (String) comboLocales.getSelectedItem();
+            
+            if (seleccionRaw == null) {
+                JOptionPane.showMessageDialog(frame, "Selecciona un local primero.");
+                return;
+            }
+            // Limpiar nombre
+            String nombreLimpio = seleccionRaw;
+            if (seleccionRaw.contains("] ")) {
+                nombreLimpio = seleccionRaw.substring(seleccionRaw.indexOf("] ") + 2);
+            }
+            final String nombreFinal = nombreLimpio;
+
+            // Hilo para consultar al servidor
+            new Thread(() -> {
+                try {
+                    // 1. Pedir reseñas al servidor
+                    Review[] reviews = gateway.getReviewsDeLocal(nombreFinal, clienteGui);
+
+                    SwingUtilities.invokeLater(() -> {
+                        if (reviews == null || reviews.length == 0) {
+                            JOptionPane.showMessageDialog(frame, "El local '" + nombreFinal + "' no tiene reseñas para borrar.");
+                            return;
+                        }
+
+                        // 2. Preparar objetos para el desplegable
+                        // Creamos una clase 'wrapper' o un String formateado para que se vea bonito en el combo
+                        String[] opciones = new String[reviews.length];
+                        for (int i = 0; i < reviews.length; i++) {
+                            Review r = reviews[i];
+                            // Formato: "★5 | Usuario: Pepe | Comentario..."
+                            String corto = r.getComentario().length() > 20 ? r.getComentario().substring(0, 20) + "..." : r.getComentario();
+                            opciones[i] = "★" + r.getValoracion() + " | " + r.getAutor().getNick() + " | " + corto;
+                        }
+
+                        // 3. Mostrar diálogo de selección
+                        String elegidoStr = (String) JOptionPane.showInputDialog(
+                                frame,
+                                "Selecciona la reseña a eliminar de " + nombreFinal + ":",
+                                "Borrar Reseña",
+                                JOptionPane.QUESTION_MESSAGE,
+                                null,
+                                opciones,
+                                opciones[0]);
+
+                        // 4. Si el usuario eligió algo y no dio a Cancelar
+                        if (elegidoStr != null) {
+                            // Buscar qué review corresponde al String seleccionado (por índice)
+                            int index = -1;
+                            for(int i=0; i<opciones.length; i++) {
+                                if(opciones[i].equals(elegidoStr)) {
+                                    index = i;
+                                    break;
+                                }
+                            }
+                            
+                            if (index != -1) {
+                                Review reviewABorrar = reviews[index];
+                                borrarReviewEnServer(gateway, reviewABorrar, frame);
+                            }
+                        }
+                    });
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(frame, "Error de conexión."));
+                }
+            }).start();
+        });
 
         // --- RESTO DE EVENTOS (Zoom, Ruta, etc) ---
         comboLocales.addActionListener(e -> {
@@ -414,5 +578,22 @@ public class AdminClientHub {
             }
             g.dispose();
         }
+    }
+    // Método auxiliar para el borrado
+    private static void borrarReviewEnServer(ClientGateway gateway, Review r, JFrame frame) {
+        new Thread(() -> {
+            try {
+                boolean borrado = gateway.quitaReview(r);
+                SwingUtilities.invokeLater(() -> {
+                    if (borrado) {
+                        JOptionPane.showMessageDialog(frame, "Reseña eliminada correctamente.");
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "No se pudo eliminar la reseña (puede que ya no exista).");
+                    }
+                });
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }).start();
     }
 }

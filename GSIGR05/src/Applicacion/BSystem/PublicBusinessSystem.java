@@ -196,6 +196,31 @@ public class PublicBusinessSystem extends BusinessSystem implements ClientGatewa
         }
         return ciudadesUnicas.toArray(new String[0]);
     }
-    
-    
+    @Override
+    public boolean publicarReview(String nombreLocal, Review r) throws RemoteException {
+        // 1. Buscamos el local real en la base de datos
+        Local l = getLocal(nombreLocal);
+        if (l != null) {
+            // 2. Añadimos la review a la lista del local
+            l.addReview(r);
+            // 3. Registramos la review en el sistema global
+            return nuevaReview(r);
+        }
+        return false;
+    }
+    @Override
+    public Review[] getReviewsDeLocal(String nombreLocal, Cliente cliente) throws RemoteException {
+        Local l = getLocal(nombreLocal);
+        List<Review> reviewsFiltradas = new ArrayList<>();
+
+        if (l != null && l.getReviews() != null) {
+            for (Review r : l.getReviews()) {
+                if (r.getAutor().getNick().equals(cliente.getNick())) {
+                    reviewsFiltradas.add(r);
+                }
+            }
+            return reviewsFiltradas.toArray(new Review[0]);
+        }
+        return new Review[0];
+    }
 }

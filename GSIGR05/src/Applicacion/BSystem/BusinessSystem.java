@@ -111,10 +111,25 @@ public class BusinessSystem implements LeisureOffice, XMLRepresentable {
         return true;
     }
 
+    // En tu Server / AdminGatewayImpl
     @Override
-    public boolean eliminaReview(Review r) {
-        if (r == null) return false;
-        return database.getReviews().remove(r);
+    public boolean eliminaReview(Review reviewABorrar) {
+        if (reviewABorrar == null) return false;
+
+        for (Local local : database.getLocales()) {
+            if (local.getReviews() != null) {
+                boolean borrado = local.getReviews().removeIf(actual -> 
+                    actual.getAutor().getID().equals(reviewABorrar.getAutor().getID()) &&
+                    actual.getFechaEscritura().getTime() == reviewABorrar.getFechaEscritura().getTime()
+                );
+
+                if (borrado) {
+                    System.out.println("Reseña eliminada correctamente del local: " + local.getNombre());
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 

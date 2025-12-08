@@ -12,6 +12,7 @@ package GSILabs.connect;
 import Dominio.BModel.Review;
 import Dominio.BModel.Restaurante;
 import Dominio.BModel.Bar;
+import Dominio.BModel.Cliente;
 import Dominio.BModel.Pub;
 import Dominio.IBModelo.Local;
 import java.rmi.Remote;
@@ -65,5 +66,6 @@ public interface ClientGateway extends Remote, LocalFinder{
     public String[] getCiudadesConLocales() throws RemoteException;
     public Restaurante mejorRestaurante(String ciudad) throws RemoteException;
     public Pub mejorPub(String ciudad) throws RemoteException;
-    
+    public boolean publicarReview(String nombreLocal, Review r) throws RemoteException;
+    public Review[] getReviewsDeLocal(String nombreLocal, Cliente cliente) throws RemoteException;
 }
