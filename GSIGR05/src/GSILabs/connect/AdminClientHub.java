@@ -425,7 +425,6 @@ public class AdminClientHub {
                                     break;
                                 }
                             }
-                            
                             if (index != -1) {
                                 Review reviewABorrar = reviews[index];
                                 borrarReviewEnServer(gateway, reviewABorrar, frame);
@@ -436,6 +435,70 @@ public class AdminClientHub {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(frame, "Error de conexión."));
+                }
+            }).start();
+        });
+        // --- BOTÓN VER RESEÑAS  ---
+        JButton btnVerReviews = new JButton("Ver Reseñas");
+        btnVerReviews.setBackground(new Color(255, 215, 0));
+        panelTop.add(Box.createHorizontalStrut(5));
+        panelTop.add(btnVerReviews);
+
+        // --- LÓGICA VER RESEÑAS ---
+        btnVerReviews.addActionListener(e -> {
+            String seleccionRaw = (String) comboLocales.getSelectedItem();
+            if (seleccionRaw == null) {
+                JOptionPane.showMessageDialog(frame, "Selecciona un local primero.");
+                return;
+            }
+            String nombreLimpio = seleccionRaw;
+            if (seleccionRaw.contains("] ")) {
+                nombreLimpio = seleccionRaw.substring(seleccionRaw.indexOf("] ") + 2);
+            }
+            final String nombreFinal = nombreLimpio;
+
+            new Thread(() -> {
+                try {
+                    // LLAMADA AL SERVIDOR: Pasamos 'null' para pedir TODAS las reseñas
+                    Review[] reviews = gateway.getReviewsDeLocal(nombreFinal, null);
+
+                    SwingUtilities.invokeLater(() -> {
+                        if (reviews == null || reviews.length == 0) {
+                            JOptionPane.showMessageDialog(frame, "El local '" + nombreFinal + "' aún no tiene reseñas.");
+                        } else {
+                            StringBuilder sb = new StringBuilder();
+                            sb.append("Reseñas de ").append(nombreFinal).append(":\n\n");
+                            
+                            Arrays.sort(reviews, (r1, r2) -> r2.getFechaEscritura().compareTo(r1.getFechaEscritura()));
+
+                            for (Review r : reviews) {
+                                sb.append("--------------------------------------------------\n");
+
+                                String estrellas = "★".repeat(r.getValoracion()) + "☆".repeat(5 - r.getValoracion());
+                                
+                                sb.append(estrellas).append(" (").append(r.getValoracion()).append("/5)  |  ");
+                                sb.append("Autor: ").append(r.getAutor().getNick()).append("\n");
+                                sb.append("Fecha: ").append(r.getFechaEscritura()).append("\n\n");
+                                sb.append(r.getComentario()).append("\n");
+                            }
+                            sb.append("--------------------------------------------------");
+
+
+                            JTextArea textArea = new JTextArea(sb.toString());
+                            textArea.setEditable(false);
+                            textArea.setLineWrap(true);
+                            textArea.setWrapStyleWord(true);
+                            textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+                            
+                            JScrollPane scrollPane = new JScrollPane(textArea);
+                            scrollPane.setPreferredSize(new Dimension(500, 400));
+
+                            JOptionPane.showMessageDialog(frame, scrollPane, "Opiniones de Clientes", JOptionPane.PLAIN_MESSAGE);
+                        }
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(frame, "Error al obtener reseñas."));
                 }
             }).start();
         });

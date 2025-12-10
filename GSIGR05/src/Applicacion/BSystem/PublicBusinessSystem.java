@@ -209,13 +209,17 @@ public class PublicBusinessSystem extends BusinessSystem implements ClientGatewa
         return false;
     }
     @Override
+    
     public Review[] getReviewsDeLocal(String nombreLocal, Cliente cliente) throws RemoteException {
         Local l = getLocal(nombreLocal);
         List<Review> reviewsFiltradas = new ArrayList<>();
 
         if (l != null && l.getReviews() != null) {
             for (Review r : l.getReviews()) {
-                if (r.getAutor().getNick().equals(cliente.getNick())) {
+                // LÓGICA MEJORADA:
+                // Si 'cliente' es null, las devolvemos TODAS (modo ver).
+                // Si 'cliente' NO es null, filtramos por ID (modo borrar).
+                if (cliente == null || r.getAutor().getID().equals(cliente.getID())) {
                     reviewsFiltradas.add(r);
                 }
             }
