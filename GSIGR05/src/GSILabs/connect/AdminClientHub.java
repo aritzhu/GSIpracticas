@@ -89,10 +89,11 @@ public class AdminClientHub {
         }
     }
     
-
     private static void crearGuiDinamica(ClientGateway gateway, String[] ciudadesDisponibles) {
-        Cliente clienteGui = new Cliente(new ArrayList<>(), "GUI_USER", "UsuarioApp", "1234", 18, new Date());
-        JFrame frame = new JFrame("Mapa de Locales Interactivo");
+        // --- Llamamos al método que pide los datos ---
+        Cliente clienteGui = pedirDatosLogin(); 
+
+        JFrame frame = new JFrame("Mapa de Locales Interactivo - Usuario: " + clienteGui.getNick());
         frame.setSize(1250, 750);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -142,7 +143,6 @@ public class AdminClientHub {
         JButton btnBestPub = new JButton("Mejor Pub");
         btnBestPub.setBackground(new Color(255, 182, 193)); // Rosa claro
 
-        // --- AÑADIR ---
         if (gateway != null) {
             panelTop.add(lblCiudad);
             panelTop.add(comboCiudades);
@@ -285,7 +285,7 @@ public class AdminClientHub {
         panelTop.add(Box.createHorizontalStrut(10));
         panelTop.add(btnAddReview);
 
-        // --- LÓGICA DEL BOTÓN MEJORADA ---
+        // --- LÓGICA DEL BOTÓN MEJORADA (CON LIMITADOR Y CONTADOR) ---
         btnAddReview.addActionListener(e -> {
             String seleccionRaw = (String) comboLocales.getSelectedItem();
             
@@ -294,34 +294,87 @@ public class AdminClientHub {
                 JOptionPane.showMessageDialog(frame, "Por favor, selecciona un local en la lista 'Ir a:'.");
                 return;
             }
-            // 2. Limpiar el nombre para mostrarlo bonito (Quitamos [BAR], [PUB]...)
+            // 2. Limpiar el nombre
             String nombreVisual = seleccionRaw;
             if (seleccionRaw.contains("] ")) {
                 nombreVisual = seleccionRaw.substring(seleccionRaw.indexOf("] ") + 2);
             }
-            // 3. Crear el panel con diseño BorderLayout para poner título arriba
+
+            // --- DEFINICIÓN DE LÍMITES ---
+            // Usamos 500 porque es lo que tiene tu clase Review.java
+            final int MAX_DB_SIZE = 500; 
+            // Tu requisito: Tamaño máximo - 1
+            final int LIMITE_USUARIO = MAX_DB_SIZE - 1; 
+
+            // 3. Crear el panel
             JPanel panelForm = new JPanel(new BorderLayout(10, 10));
-            panelForm.setPreferredSize(new Dimension(350, 200)); // Hacemos la ventana un poco más ancha
-            // --- CABECERA: NOMBRE DEL LOCAL ---
+            panelForm.setPreferredSize(new Dimension(400, 250)); // Un poco más grande para el contador
+
+            // Cabecera
             JLabel lblTitulo = new JLabel("<html>Reseña para:<br/><b><font size='5' color='blue'>" + nombreVisual + "</font></b></html>");
             lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-            lblTitulo.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 5)); // Margen
             panelForm.add(lblTitulo, BorderLayout.NORTH);
-            // --- CUERPO: INPUTS ---
-            JPanel panelInputs = new JPanel(new GridLayout(0, 1, 5, 5)); // Grid para los campos
-            // Selector de nota
-            JComboBox<Integer> comboNota = new JComboBox<>(new Integer[]{5, 4, 3, 2, 1});
+
+            // Cuerpo
+            JPanel panelInputs = new JPanel(new BorderLayout(5, 5)); // Usamos BorderLayout dentro para organizar mejor
+            
+            // Panel Superior (Puntuación)
             JPanel pNota = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            JComboBox<Integer> comboNota = new JComboBox<>(new Integer[]{5, 4, 3, 2, 1});
             pNota.add(new JLabel("Puntuación: "));
             pNota.add(comboNota);
-            panelInputs.add(pNota);
-            // Tex comentario
-            panelInputs.add(new JLabel("Tu opinión:"));
-            JTextArea textComentario = new JTextArea(4, 20);
+            
+            panelInputs.add(pNota, BorderLayout.NORTH);
+
+            // Panel Central (Texto y Contador)
+            JPanel pTexto = new JPanel(new BorderLayout());
+            pTexto.add(new JLabel("Tu opinión:"), BorderLayout.NORTH);
+
+            JTextArea textComentario = new JTextArea(5, 20);
             textComentario.setLineWrap(true);
             textComentario.setWrapStyleWord(true);
+            
             JScrollPane scrollComment = new JScrollPane(textComentario);
-            panelInputs.add(scrollComment);
+            pTexto.add(scrollComment, BorderLayout.CENTER);
+
+            // --- IMPLEMENTACIÓN DEL CONTADOR ---
+            JLabel lblContador = new JLabel("0 / " + LIMITE_USUARIO);
+            lblContador.setHorizontalAlignment(SwingConstants.RIGHT);
+            lblContador.setForeground(Color.GRAY);
+            lblContador.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 5)); // Un poco de margen
+
+            // KeyListener para controlar lo que escribe el usuario
+            textComentario.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyTyped(KeyEvent evt) {
+                    // Si ya ha llegado al límite (499) y NO está borrando, bloqueamos la tecla
+                    if (textComentario.getText().length() >= LIMITE_USUARIO 
+                            && evt.getKeyChar() != KeyEvent.VK_BACK_SPACE 
+                            && evt.getKeyChar() != KeyEvent.VK_DELETE) {
+                        
+                        evt.consume(); // Ignora la tecla
+                        Toolkit.getDefaultToolkit().beep(); // Sonido de aviso
+                    }
+                }
+
+                @Override
+                public void keyReleased(KeyEvent evt) {
+                    // Actualizamos el contador visualmente
+                    int actuales = textComentario.getText().length();
+                    lblContador.setText(actuales + " / " + LIMITE_USUARIO);
+
+                    // Cambio de color visual por seguridad (si pegan texto largo)
+                    if (actuales > LIMITE_USUARIO) {
+                        lblContador.setForeground(Color.RED);
+                        lblContador.setText(actuales + " / " + LIMITE_USUARIO + " (Exceso)");
+                    } else {
+                        lblContador.setForeground(Color.GRAY);
+                    }
+                }
+            });
+
+            pTexto.add(lblContador, BorderLayout.SOUTH);
+            panelInputs.add(pTexto, BorderLayout.CENTER);
 
             panelForm.add(panelInputs, BorderLayout.CENTER);
 
@@ -333,21 +386,28 @@ public class AdminClientHub {
                 String comentario = textComentario.getText();
                 int nota = (Integer) comboNota.getSelectedItem();
 
-                if (comentario.isEmpty()) {
+                // --- VALIDACIÓN DE SEGURIDAD FINAL ---
+                // 1. Que no esté vacío
+                if (comentario.trim().isEmpty()) {
                     JOptionPane.showMessageDialog(frame, "El comentario no puede estar vacío.");
                     return;
                 }
+                
+                // 2. Que no supere el límite (Por si pegan texto con Ctrl+V)
+                if (comentario.length() > LIMITE_USUARIO) {
+                    JOptionPane.showMessageDialog(frame, 
+                        "Texto demasiado largo. Has pegado " + comentario.length() + " caracteres.\n" +
+                        "El límite es " + LIMITE_USUARIO + ".",
+                        "Error de longitud", JOptionPane.ERROR_MESSAGE);
+                    return; // IMPORTANTE: Cortamos aquí para que NO pete el servidor
+                }
 
-                // Guardamos el nombre limpio para usarlo en el hilo (variable efectivamente final)
                 final String nombreParaServer = nombreVisual; 
 
-                // 5. Enviar al servidor
+                // 5. Enviar al servidor (Solo si pasamos las validaciones)
                 new Thread(() -> {
                     try {
-                        // Cliente temporal (GUI)
-                        
                         Review nuevaReview = new Review(nota, comentario, new Date(), clienteGui);
-
                         boolean exito = gateway.publicarReview(nombreParaServer, nuevaReview);
 
                         SwingUtilities.invokeLater(() -> {
@@ -359,6 +419,7 @@ public class AdminClientHub {
                         });
                     } catch (Exception ex) {
                         ex.printStackTrace();
+                        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(frame, "Error de conexión."));
                     }
                 }).start();
             }
@@ -586,7 +647,7 @@ public class AdminClientHub {
     private static List<GeoPosition> obtenerRutaOSRM(GeoPosition inicio, GeoPosition fin) {
         List<GeoPosition> rutaSegmento = new ArrayList<>();
         try {
-            String urlStr = String.format(Locale.US, "http://router.project-osrm.org/route/v1/driving/%f,%f;%f,%f?overview=full&geometries=geojson", inicio.getLongitude(), inicio.getLatitude(), fin.getLongitude(), fin.getLatitude());
+            String urlStr = String.format(Locale.US, "http://router.project-osrm.org/route/v1/foot/%f,%f;%f,%f?overview=full&geometries=geojson", inicio.getLongitude(), inicio.getLatitude(), fin.getLongitude(), fin.getLatitude());
             HttpURLConnection conn = (HttpURLConnection) new URL(urlStr).openConnection();
             if (conn.getResponseCode() == 200) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -659,4 +720,64 @@ public class AdminClientHub {
             }
         }).start();
     }
+    // Método auxiliar para pedir datos al inicio
+private static Cliente pedirDatosLogin() {
+    // Panel que contendrá los campos
+    JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
+    
+    JTextField txtNick = new JTextField(10);
+    JPasswordField txtPass = new JPasswordField(10);
+    JTextField txtEdad = new JTextField(5);
+
+    panel.add(new JLabel("Nick / Usuario:"));
+    panel.add(txtNick);
+    
+    panel.add(new JLabel("Contraseña:"));
+    panel.add(txtPass);
+    
+    panel.add(new JLabel("Edad:"));
+    panel.add(txtEdad);
+
+    while (true) {
+        int result = JOptionPane.showConfirmDialog(null, panel, 
+                "Login de Usuario", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result != JOptionPane.OK_OPTION) {
+            System.exit(0);
+        }
+
+        // Recogemos datos
+        String nick = txtNick.getText().trim();
+        String pass = new String(txtPass.getPassword());
+        String edadStr = txtEdad.getText().trim();
+
+        // Validaciones básicas
+        if (nick.isEmpty() || pass.isEmpty() || edadStr.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.", "Error", JOptionPane.ERROR_MESSAGE);
+            continue;
+        }
+
+        try {
+            int edad = Integer.parseInt(edadStr);
+            if (edad < 14) {
+                 JOptionPane.showMessageDialog(null, "Debes ser mayor de 14 años para usar la App.", "Acceso denegado", JOptionPane.WARNING_MESSAGE);
+                 continue;
+            }
+
+            String idGenerado = nick.toUpperCase() + "_" + System.currentTimeMillis();
+            
+            return new Cliente(
+                new ArrayList<>(),
+                idGenerado, 
+                nick,
+                pass,
+                edad, 
+                new Date()
+            );
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "La edad debe ser un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+}
 }
